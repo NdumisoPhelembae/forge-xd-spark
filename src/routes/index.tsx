@@ -27,7 +27,7 @@ function Index() {
 
   return (
     <main className="overflow-hidden bg-background text-foreground">
-      <section className="relative min-h-[92svh] bg-brand-ink text-primary-foreground">
+      <section className="relative bg-brand-ink text-primary-foreground">
         <img className="absolute inset-0 h-full w-full object-cover opacity-75" src={signatureAsset.url} alt="ForgeXD geometric signature pattern" />
         <div className="signature-overlay absolute inset-0" />
 
@@ -44,7 +44,7 @@ function Index() {
           <a href="#services" aria-label="Open services" className="flex h-10 w-10 items-center justify-center border border-primary-foreground/30 md:hidden"><Menu size={19} /></a>
         </header>
 
-        <div id="top" className="relative z-10 mx-auto flex min-h-[calc(92svh-96px)] max-w-[1400px] flex-col justify-center px-5 pb-12 md:px-10 md:pb-16 lg:px-16">
+        <div id="top" className="relative z-10 mx-auto max-w-[1400px] px-5 pb-[9svh] pt-[7svh] md:px-10 md:pt-[9svh] lg:px-16">
           <div className="max-w-4xl">
             <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">Independent digital agency · South Africa</p>
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We shape digital experiences for what’s next.</h1>
