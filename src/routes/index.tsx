@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowUpRight, Menu } from "lucide-react";
 import signatureAsset from "../assets/forgexd-signature-background.png.asset.json";
-import logoAsset from "../assets/forgexd-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,7 +42,6 @@ function Index() {
         </header>
 
         <div id="top" className="relative z-10 mx-auto flex min-h-[calc(92svh-96px)] max-w-[1400px] flex-col justify-end px-5 pb-12 md:px-10 md:pb-16 lg:px-16">
-          <img src={logoAsset.url} alt="ForgeXD — Forge What’s Next" className="mb-5 w-full max-w-[720px] self-center object-contain md:mb-2 md:self-end" />
           <div className="max-w-4xl border-t border-primary-foreground/25 pt-8">
             <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">Independent digital agency · South Africa</p>
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We shape digital experiences for what’s next.</h1>
