@@ -62,6 +62,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-brand-orange: var(--brand-orange);
+  --color-brand-ember: var(--brand-ember);
   --color-brand-olive: var(--brand-olive);
   --color-brand-silver: var(--brand-silver);
   --color-brand-ink: var(--brand-ink);
@@ -69,29 +70,31 @@
 
 :root {
   --radius: 0.25rem;
-  --background: oklch(0.975 0.005 85);
-  --foreground: oklch(0.16 0.005 80);
+  --background: oklch(0.98 0.004 80);
+  --foreground: oklch(0.186 0.008 48.3);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.16 0.005 80);
+  --card-foreground: oklch(0.186 0.008 48.3);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.16 0.005 80);
-  --primary: oklch(0.56 0.18 48);
+  --popover-foreground: oklch(0.186 0.008 48.3);
+  --primary: oklch(0.638 0.195 39.8);
   --primary-foreground: oklch(0.98 0.005 85);
-  --secondary: oklch(0.30 0.04 105);
+  --secondary: oklch(0.462 0.048 144.7);
   --secondary-foreground: oklch(0.98 0.005 85);
-  --muted: oklch(0.93 0.007 85);
-  --muted-foreground: oklch(0.46 0.012 80);
-  --accent: oklch(0.92 0.04 92);
-  --accent-foreground: oklch(0.25 0.025 95);
+  --muted: oklch(0.93 0.006 80);
+  --muted-foreground: oklch(0.46 0.012 70);
+  --accent: oklch(0.94 0.03 50);
+  --accent-foreground: oklch(0.35 0.09 40);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.84 0.01 85);
-  --input: oklch(0.84 0.01 85);
-  --ring: oklch(0.56 0.18 48);
-  --brand-orange: oklch(0.56 0.18 48);
-  --brand-olive: oklch(0.38 0.055 103);
-  --brand-silver: oklch(0.77 0.008 80);
-  --brand-ink: oklch(0.12 0.004 80);
+  --border: oklch(0.87 0.008 80);
+  --input: oklch(0.87 0.008 80);
+  --ring: oklch(0.638 0.195 39.8);
+  /* Ember & Steel — ForgeXD brand palette, sampled from the logo */
+  --brand-orange: oklch(0.638 0.195 39.8);   /* #E85410 forge orange */
+  --brand-ember: oklch(0.532 0.186 35);      /* #C03000 deep ember */
+  --brand-olive: oklch(0.462 0.048 144.7);   /* #486048 sage olive */
+  --brand-silver: oklch(0.882 0 89.9);       /* #D8D8D8 metallic silver */
+  --brand-ink: oklch(0.186 0.008 48.3);      /* #161210 warm ink */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
