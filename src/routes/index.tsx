@@ -33,7 +33,7 @@ function Index() {
 
         <header className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-5 py-6 md:px-10 lg:px-16">
           <a href="#top" aria-label="ForgeXD home" className="flex items-center">
-            <img src={logoAsset} alt="ForgeXD logo" className="h-9 w-auto md:h-11" />
+            <img src={logoAsset} alt="ForgeXD logo" className="h-11 w-auto md:h-[50px]" />
           </a>
           <nav className="hidden items-center gap-8 text-sm text-primary-foreground/75 md:flex" aria-label="Main navigation">
             <a className="hover:text-primary-foreground" href="#services">Services</a>
@@ -44,8 +44,8 @@ function Index() {
           <a href="#services" aria-label="Open services" className="flex h-10 w-10 items-center justify-center border border-primary-foreground/30 md:hidden"><Menu size={19} /></a>
         </header>
 
-        <div id="top" className="relative z-10 mx-auto flex min-h-[calc(92svh-96px)] max-w-[1400px] flex-col justify-end px-5 pb-12 md:px-10 md:pb-16 lg:px-16">
-          <div className="max-w-4xl border-t border-primary-foreground/25 pt-8">
+        <div id="top" className="relative z-10 mx-auto flex min-h-[calc(92svh-96px)] max-w-[1400px] flex-col justify-center px-5 pb-12 md:px-10 md:pb-16 lg:px-16">
+          <div className="max-w-4xl">
             <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">Independent digital agency · South Africa</p>
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We shape digital experiences for what’s next.</h1>
             <div className="mt-8 flex flex-col items-start justify-between gap-7 md:flex-row md:items-end">
