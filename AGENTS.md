@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Project decisions
+
+- Use the uploaded ForgeXD signature artwork and logo as CDN-backed brand assets because they are the authoritative visual identity.
+- Keep the site as a focused single-page agency experience because the current scope is introductory marketing and direct enquiry.
