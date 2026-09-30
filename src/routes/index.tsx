@@ -1,24 +1,100 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ArrowDownRight, ArrowUpRight, Menu } from "lucide-react";
+import signatureAsset from "../assets/forgexd-signature-background.png.asset.json";
+import logoAsset from "../assets/forgexd-logo-artwork.png.asset.json";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "ForgeXD | Web Design, Marketing & Digital Strategy" },
+      { name: "description", content: "ForgeXD is a digital agency creating websites, campaigns, UX/UI and business strategies for ambitious brands." },
+      { property: "og:title", content: "ForgeXD | Forge What’s Next" },
+      { property: "og:description", content: "Web design, digital marketing, UX/UI and business strategy for ambitious brands." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const services = [
+    ["01", "Web design & development", "High-performing digital platforms shaped around your customers and your business."],
+    ["02", "Digital marketing", "Focused campaigns and content systems that turn attention into meaningful growth."],
+    ["03", "UX & UI design", "Clear, considered experiences that make complex products feel effortless to use."],
+    ["04", "Digital business strategy", "Practical direction that connects your brand, technology and growth opportunities."],
+  ];
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="overflow-hidden bg-background text-foreground">
+      <section className="relative min-h-[92svh] bg-brand-ink text-primary-foreground">
+        <img className="absolute inset-0 h-full w-full object-cover opacity-75" src={signatureAsset.url} alt="ForgeXD geometric signature pattern" />
+        <div className="signature-overlay absolute inset-0" />
+
+        <header className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-5 py-6 md:px-10 lg:px-16">
+          <a href="#top" className="font-display text-xl font-semibold" aria-label="ForgeXD home">Forge<span className="text-brand-orange">XD</span></a>
+          <nav className="hidden items-center gap-8 text-sm text-primary-foreground/75 md:flex" aria-label="Main navigation">
+            <a className="hover:text-primary-foreground" href="#services">Services</a>
+            <a className="hover:text-primary-foreground" href="#approach">Approach</a>
+            <a className="hover:text-primary-foreground" href="#contact">Contact</a>
+          </nav>
+          <a href="#contact" className="hidden items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-semibold transition-colors hover:border-brand-orange hover:text-brand-orange md:flex">Start a project <ArrowUpRight size={16} /></a>
+          <a href="#services" aria-label="Open services" className="flex h-10 w-10 items-center justify-center border border-primary-foreground/30 md:hidden"><Menu size={19} /></a>
+        </header>
+
+        <div id="top" className="relative z-10 mx-auto flex min-h-[calc(92svh-96px)] max-w-[1400px] flex-col justify-end px-5 pb-12 md:px-10 md:pb-16 lg:px-16">
+          <img src={logoAsset.url} alt="ForgeXD — Forge What’s Next" className="mb-4 w-full max-w-[650px] self-center mix-blend-screen md:mb-0 md:self-end" />
+          <div className="max-w-4xl border-t border-primary-foreground/25 pt-8">
+            <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">Independent digital agency · South Africa</p>
+            <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We shape digital experiences for what’s next.</h1>
+            <div className="mt-8 flex flex-col items-start justify-between gap-7 md:flex-row md:items-end">
+              <p className="max-w-xl text-base leading-7 text-primary-foreground/68 md:text-lg">ForgeXD brings web design, marketing, UX/UI and business strategy together to move ambitious brands forward.</p>
+              <a href="#services" className="flex items-center gap-3 text-sm font-semibold uppercase text-primary-foreground">Explore our work <span className="flex h-10 w-10 items-center justify-center bg-brand-orange"><ArrowDownRight size={18} /></span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" className="brand-grid px-5 py-20 md:px-10 md:py-28 lg:px-16">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="mb-12 grid gap-6 md:grid-cols-2 md:items-end">
+            <div><p className="mb-4 text-xs font-bold uppercase text-brand-orange">What we do</p><h2 className="font-display text-4xl font-medium md:text-6xl">Built to create<br />momentum.</h2></div>
+            <p className="max-w-lg text-base leading-7 text-muted-foreground md:justify-self-end">From the first idea to sustained growth, we assemble the right mix of design, technology and strategic thinking.</p>
+          </div>
+          <div className="border-t border-foreground/20">
+            {services.map(([number, title, description]) => (
+              <a key={number} href="#contact" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
+                <span className="text-xs font-bold text-brand-orange">{number}</span>
+                <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
+                <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
+                <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="approach" className="bg-brand-olive px-5 py-20 text-secondary-foreground md:px-10 md:py-28 lg:px-16">
+        <div className="mx-auto grid max-w-[1400px] gap-16 lg:grid-cols-[1fr_1.4fr]">
+          <div><p className="mb-4 text-xs font-bold uppercase text-brand-orange">Our approach</p><h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Clarity before complexity.</h2></div>
+          <div className="grid gap-px bg-secondary-foreground/15 sm:grid-cols-3">
+            {[["Discover", "We find the real opportunity."], ["Design", "We make every choice intentional."], ["Deliver", "We launch, learn and improve."]].map(([title, copy], index) => (
+              <div key={title} className="bg-brand-olive p-7 md:min-h-56"><span className="text-xs text-brand-silver">0{index + 1}</span><h3 className="mt-12 font-display text-2xl">{title}</h3><p className="mt-3 text-sm leading-6 text-secondary-foreground/70">{copy}</p></div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" className="bg-brand-ink px-5 py-20 text-primary-foreground md:px-10 md:py-28 lg:px-16">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="mb-5 text-xs font-bold uppercase text-brand-orange">Start something meaningful</p>
+          <a href="mailto:hello@forgexd.co.za" className="group flex items-end justify-between gap-6 border-b border-primary-foreground/30 pb-8">
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-7xl">Let’s forge<br />what’s next.</h2>
+            <ArrowUpRight className="mb-2 shrink-0 text-brand-orange transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" size={40} />
+          </a>
+          <footer className="mt-10 flex flex-col gap-4 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><a className="hover:text-primary-foreground" href="mailto:hello@forgexd.co.za">hello@forgexd.co.za</a></footer>
+        </div>
+      </section>
+    </main>
   );
 }
