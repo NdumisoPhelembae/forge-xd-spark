@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowUpRight, Menu } from "lucide-react";
 import signatureAsset from "../assets/forgexd-signature-background.png.asset.json";
+import logoAsset from "../assets/forgexd-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,7 +32,9 @@ function Index() {
         <div className="signature-overlay absolute inset-0" />
 
         <header className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-5 py-6 md:px-10 lg:px-16">
-          <a href="#top" className="font-display text-xl font-semibold" aria-label="ForgeXD home">Forge<span className="text-brand-orange">XD</span></a>
+          <a href="#top" aria-label="ForgeXD home" className="flex items-center">
+            <img src={logoAsset.url} alt="ForgeXD logo" className="h-9 w-auto md:h-11" />
+          </a>
           <nav className="hidden items-center gap-8 text-sm text-primary-foreground/75 md:flex" aria-label="Main navigation">
             <a className="hover:text-primary-foreground" href="#services">Services</a>
             <a className="hover:text-primary-foreground" href="#approach">Approach</a>
@@ -53,7 +56,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="services" className="brand-grid px-5 py-20 md:px-10 md:py-28 lg:px-16">
+      <section id="services" className="px-5 py-20 md:px-10 md:py-28 lg:px-16">
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-12 grid gap-6 md:grid-cols-2 md:items-end">
             <div><p className="mb-4 text-xs font-bold uppercase text-brand-orange">What we do</p><h2 className="font-display text-4xl font-medium md:text-6xl">Built to create<br />momentum.</h2></div>
