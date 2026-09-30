@@ -33,7 +33,7 @@ function Index() {
 
         <header className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-5 py-6 md:px-10 lg:px-16">
           <a href="#top" aria-label="ForgeXD home" className="flex items-center">
-            <img src={logoAsset.url} alt="ForgeXD logo" className="h-9 w-auto md:h-11" />
+            <img src={logoAsset} alt="ForgeXD logo" className="h-9 w-auto md:h-11" />
           </a>
           <nav className="hidden items-center gap-8 text-sm text-primary-foreground/75 md:flex" aria-label="Main navigation">
             <a className="hover:text-primary-foreground" href="#services">Services</a>
