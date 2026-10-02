@@ -12,4 +12,4 @@
 ## Project decisions
 
 - Use the uploaded ForgeXD signature artwork and logo as CDN-backed brand assets because they are the authoritative visual identity.
-- Keep the site as a focused single-page agency experience because the current scope is introductory marketing and direct enquiry.
+- Keep the home page as a focused agency overview, with dedicated service routes for detailed offers, because each service needs room for useful decision-making content.

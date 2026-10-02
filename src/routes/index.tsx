@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowUpRight, Menu } from "lucide-react";
 import signatureAsset from "../assets/forgexd-signature-background.png.asset.json";
 import logoAsset from "../assets/forgexd-logo-cropped.png";
@@ -19,10 +19,10 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const services = [
-    ["01", "Web design & development", "High-performing digital platforms shaped around your customers and your business."],
-    ["02", "Digital marketing", "Focused campaigns and content systems that turn attention into meaningful growth."],
-    ["03", "UX & UI design", "Clear, considered experiences that make complex products feel effortless to use."],
-    ["04", "Digital business strategy", "Practical direction that connects your brand, technology and growth opportunities."],
+    { number: "01", title: "Web design & development", description: "High-performing digital platforms shaped around your customers and your business.", href: "/services/web-design-development" },
+    { number: "02", title: "Digital marketing", description: "Focused campaigns and content systems that turn attention into meaningful growth.", href: "#contact" },
+    { number: "03", title: "UX & UI design", description: "Clear, considered experiences that make complex products feel effortless to use.", href: "#contact" },
+    { number: "04", title: "Digital business strategy", description: "Practical direction that connects your brand, technology and growth opportunities.", href: "#contact" },
   ];
 
   return (
@@ -63,8 +63,15 @@ function Index() {
             <p className="max-w-lg text-base leading-7 text-muted-foreground md:justify-self-end">From the first idea to sustained growth, we assemble the right mix of design, technology and strategic thinking.</p>
           </div>
           <div className="border-t border-foreground/20">
-            {services.map(([number, title, description]) => (
-              <a key={number} href="#contact" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
+            {services.map(({ number, title, description, href }) => href.startsWith("/") ? (
+              <Link key={number} to="/services/web-design-development" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
+                <span className="text-xs font-bold text-brand-orange">{number}</span>
+                <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
+                <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
+                <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
+              </Link>
+            ) : (
+              <a key={number} href={href} className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
                 <span className="text-xs font-bold text-brand-orange">{number}</span>
                 <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
                 <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
