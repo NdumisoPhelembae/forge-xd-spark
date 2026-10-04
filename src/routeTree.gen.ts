@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesDigitalBusinessLaunchPackageRouteImport } from './routes/services.digital-business-launch-package'
 import { Route as ServicesWebDesignDevelopmentRouteImport } from './routes/services.web-design-development'
 
 const IndexRoute = IndexRouteImport.update({
@@ -17,6 +18,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesDigitalBusinessLaunchPackageRoute =
+  ServicesDigitalBusinessLaunchPackageRouteImport.update({
+    id: '/services/digital-business-launch-package',
+    path: '/services/digital-business-launch-package',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ServicesWebDesignDevelopmentRoute =
   ServicesWebDesignDevelopmentRouteImport.update({
     id: '/services/web-design-development',
@@ -26,27 +33,41 @@ const ServicesWebDesignDevelopmentRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/services/web-design-development'
+  fullPaths:
+    | '/'
+    | '/services/digital-business-launch-package'
+    | '/services/web-design-development'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/services/web-design-development'
-  id: '__root__' | '/' | '/services/web-design-development'
+  to:
+    | '/'
+    | '/services/digital-business-launch-package'
+    | '/services/web-design-development'
+  id:
+    | '__root__'
+    | '/'
+    | '/services/digital-business-launch-package'
+    | '/services/web-design-development'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ServicesDigitalBusinessLaunchPackageRoute: typeof ServicesDigitalBusinessLaunchPackageRoute
   ServicesWebDesignDevelopmentRoute: typeof ServicesWebDesignDevelopmentRoute
 }
 
@@ -57,6 +78,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/digital-business-launch-package': {
+      id: '/services/digital-business-launch-package'
+      path: '/services/digital-business-launch-package'
+      fullPath: '/services/digital-business-launch-package'
+      preLoaderRoute: typeof ServicesDigitalBusinessLaunchPackageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/web-design-development': {
@@ -71,6 +99,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ServicesDigitalBusinessLaunchPackageRoute:
+    ServicesDigitalBusinessLaunchPackageRoute,
   ServicesWebDesignDevelopmentRoute: ServicesWebDesignDevelopmentRoute,
 }
 export const routeTree = rootRouteImport
