@@ -16,7 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import logoAsset from "../assets/forgexd-logo-cropped.png";
-import signatureAsset from "../assets/forgexd-signature-background.png.asset.json";
+import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/web-design-showcase.jpg";
 
 export const Route = createFileRoute("/services/web-design-development")({
@@ -71,7 +71,7 @@ function WebDesignDevelopment() {
       <section className="relative min-h-[720px] bg-brand-ink text-primary-foreground md:min-h-[760px]">
         <img src={showcaseImage} alt="Responsive website layouts displayed on a laptop and phone" width={1536} height={1024} className="absolute inset-0 h-full w-full object-cover object-[62%_center] opacity-55 md:object-center" />
         <div className="service-hero-overlay absolute inset-0" />
-        <img src={signatureAsset.url} alt="" aria-hidden="true" className="absolute -right-28 -top-20 h-80 w-80 rotate-12 object-cover opacity-35 mix-blend-screen md:h-[30rem] md:w-[30rem]" />
+        <img src={signaturePattern} alt="" aria-hidden="true" className="absolute -right-28 -top-20 h-80 w-80 rotate-12 object-cover opacity-35 md:h-[30rem] md:w-[30rem]" />
 
         <header className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-5 py-6 md:px-10 lg:px-16">
           <Link to="/" aria-label="ForgeXD home"><img src={logoAsset} alt="ForgeXD logo" className="h-11 w-auto md:h-[50px]" /></Link>
@@ -129,7 +129,7 @@ function WebDesignDevelopment() {
       </section>
 
       <section className="relative overflow-hidden bg-brand-ink px-5 py-20 text-primary-foreground md:px-10 md:py-28 lg:px-16">
-        <img src={signatureAsset.url} alt="" aria-hidden="true" loading="lazy" className="absolute -left-24 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 object-cover opacity-40" />
+        <img src={signaturePattern} alt="" aria-hidden="true" loading="lazy" className="absolute -left-24 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 object-cover opacity-40" />
         <div className="signature-cta-overlay absolute inset-0" />
         <div className="relative mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.65fr_1fr] lg:items-end"><div /><div><p className="mb-5 text-xs font-bold uppercase text-brand-orange">Ready to build?</p><h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Let’s create something that works for your business.</h2><p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">Tell us what you want to achieve and we’ll recommend the right approach and solution for your needs.</p><a href="mailto:hello@forgexd.co.za?subject=Web%20design%20project" className="mt-8 inline-flex items-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold">Start a project <ArrowUpRight size={17} /></a></div></div>
         <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><a href="mailto:hello@forgexd.co.za" className="hover:text-primary-foreground">hello@forgexd.co.za</a></footer>
