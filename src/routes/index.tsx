@@ -24,6 +24,7 @@ function Index() {
     { number: "03", title: "UX & UI design", description: "Clear, considered experiences that make complex products feel effortless to use.", href: "#contact" },
     { number: "04", title: "Digital business strategy", description: "Practical direction that connects your brand, technology and growth opportunities.", href: "#contact" },
     { number: "05", title: "Digital Business Launch Package", description: "A complete digital foundation to launch, grow or move your business online with confidence.", href: "/services/digital-business-launch-package" },
+    { number: "06", title: "SEO & content strategy", description: "Technical SEO, content and measurement that turn search visibility into sustainable growth.", href: "/services/seo-content-strategy" },
   ];
 
   return (
@@ -73,6 +74,13 @@ function Index() {
               </Link>
             ) : href === "/services/digital-business-launch-package" ? (
               <Link key={number} to="/services/digital-business-launch-package" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
+                <span className="text-xs font-bold text-brand-orange">{number}</span>
+                <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
+                <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
+                <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
+              </Link>
+            ) : href === "/services/seo-content-strategy" ? (
+              <Link key={number} to="/services/seo-content-strategy" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
                 <span className="text-xs font-bold text-brand-orange">{number}</span>
                 <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
                 <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
