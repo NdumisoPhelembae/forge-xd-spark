@@ -24,6 +24,7 @@ function Index() {
     { number: "03", title: "UX & UI design", description: "Clear, considered experiences that make complex products feel effortless to use.", href: "#contact" },
     { number: "04", title: "Digital business strategy", description: "Practical direction that connects your brand, technology and growth opportunities.", href: "#contact" },
     { number: "05", title: "Digital Business Launch Package", description: "A complete digital foundation to launch, grow or move your business online with confidence.", href: "/services/digital-business-launch-package" },
+    { number: "06", title: "SEO & content strategy", description: "Technical SEO, content and measurement that turn search visibility into sustainable growth.", href: "/services/seo-content-strategy" },
   ];
 
   return (

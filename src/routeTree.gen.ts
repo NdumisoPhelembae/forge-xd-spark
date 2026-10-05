@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesDigitalBusinessLaunchPackageRouteImport } from './routes/services.digital-business-launch-package'
+import { Route as ServicesSeoContentStrategyRouteImport } from './routes/services.seo-content-strategy'
 import { Route as ServicesWebDesignDevelopmentRouteImport } from './routes/services.web-design-development'
 
 const IndexRoute = IndexRouteImport.update({
@@ -24,6 +25,12 @@ const ServicesDigitalBusinessLaunchPackageRoute =
     path: '/services/digital-business-launch-package',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ServicesSeoContentStrategyRoute =
+  ServicesSeoContentStrategyRouteImport.update({
+    id: '/services/seo-content-strategy',
+    path: '/services/seo-content-strategy',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ServicesWebDesignDevelopmentRoute =
   ServicesWebDesignDevelopmentRouteImport.update({
     id: '/services/web-design-development',
@@ -34,17 +41,20 @@ const ServicesWebDesignDevelopmentRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
+  '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
+  '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
+  '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRouteTypes {
@@ -52,22 +62,26 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/services/digital-business-launch-package'
+    | '/services/seo-content-strategy'
     | '/services/web-design-development'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/services/digital-business-launch-package'
+    | '/services/seo-content-strategy'
     | '/services/web-design-development'
   id:
     | '__root__'
     | '/'
     | '/services/digital-business-launch-package'
+    | '/services/seo-content-strategy'
     | '/services/web-design-development'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ServicesDigitalBusinessLaunchPackageRoute: typeof ServicesDigitalBusinessLaunchPackageRoute
+  ServicesSeoContentStrategyRoute: typeof ServicesSeoContentStrategyRoute
   ServicesWebDesignDevelopmentRoute: typeof ServicesWebDesignDevelopmentRoute
 }
 
@@ -87,6 +101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesDigitalBusinessLaunchPackageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/seo-content-strategy': {
+      id: '/services/seo-content-strategy'
+      path: '/services/seo-content-strategy'
+      fullPath: '/services/seo-content-strategy'
+      preLoaderRoute: typeof ServicesSeoContentStrategyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/web-design-development': {
       id: '/services/web-design-development'
       path: '/services/web-design-development'
@@ -101,6 +122,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ServicesDigitalBusinessLaunchPackageRoute:
     ServicesDigitalBusinessLaunchPackageRoute,
+  ServicesSeoContentStrategyRoute: ServicesSeoContentStrategyRoute,
   ServicesWebDesignDevelopmentRoute: ServicesWebDesignDevelopmentRoute,
 }
 export const routeTree = rootRouteImport
