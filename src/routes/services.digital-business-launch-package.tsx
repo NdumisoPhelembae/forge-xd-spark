@@ -150,7 +150,7 @@ function DigitalBusinessLaunchPackage() {
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-12 max-w-4xl"><p className="mb-4 text-xs font-bold uppercase text-brand-orange">Our packages</p><h2 className="font-display text-4xl font-medium md:text-6xl">Launch at the right level for your business.</h2></div>
           <div className="grid gap-5 lg:grid-cols-3">
-            {packages.map(pkg => <article key={pkg.name} className={`relative flex min-h-[34rem] flex-col border p-7 ${pkg.featured ? "border-brand-orange" : "border-foreground/20"}`}>
+            {packages.map(pkg => <article key={pkg.name} className={`relative flex flex-col gap-8 lg:min-h-[34rem] border p-7 ${pkg.featured ? "border-brand-orange" : "border-foreground/20"}`}>
               {pkg.featured && <span className="absolute right-5 top-0 -translate-y-1/2 bg-brand-orange px-3 py-1 text-[10px] font-bold uppercase text-primary-foreground">Most popular</span>}
               <p className="text-xs font-bold uppercase text-brand-orange">{pkg.audience}</p><h3 className="mt-3 font-display text-3xl">{pkg.name}</h3><p className="mt-5 text-sm leading-6 text-muted-foreground">{pkg.intro}</p>
               <ul className="mt-8 space-y-3">{pkg.items.map(item => <li key={item} className="flex items-center gap-3 text-sm"><span className="flex h-5 w-5 shrink-0 items-center justify-center border border-brand-orange"><Check size={13} className="text-brand-orange" /></span>{item}</li>)}</ul>
