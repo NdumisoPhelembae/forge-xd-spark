@@ -79,6 +79,13 @@ function Index() {
                 <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
                 <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
               </Link>
+            ) : href === "/services/seo-content-strategy" ? (
+              <Link key={number} to="/services/seo-content-strategy" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
+                <span className="text-xs font-bold text-brand-orange">{number}</span>
+                <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
+                <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
+                <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
+              </Link>
             ) : (
               <a key={number} href={href} className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
                 <span className="text-xs font-bold text-brand-orange">{number}</span>
