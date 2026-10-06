@@ -38,6 +38,7 @@ function Index() {
           </a>
           <nav className="hidden items-center gap-8 text-sm text-primary-foreground/75 md:flex" aria-label="Main navigation">
             <a className="hover:text-primary-foreground" href="#services">Services</a>
+            <Link className="hover:text-primary-foreground" to="/about">About</Link>
             <a className="hover:text-primary-foreground" href="#approach">Approach</a>
             <a className="hover:text-primary-foreground" href="#contact">Contact</a>
           </nav>
