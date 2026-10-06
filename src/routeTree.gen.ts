@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as ServicesDigitalBusinessLaunchPackageRouteImport } from './routes/services.digital-business-launch-package'
 import { Route as ServicesSeoContentStrategyRouteImport } from './routes/services.seo-content-strategy'
 import { Route as ServicesUxUiDesignRouteImport } from './routes/services.ux-ui-design'
@@ -18,6 +19,11 @@ import { Route as ServicesWebDesignDevelopmentRouteImport } from './routes/servi
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesDigitalBusinessLaunchPackageRoute =
@@ -46,6 +52,7 @@ const ServicesWebDesignDevelopmentRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
@@ -53,6 +60,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
@@ -61,6 +69,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
@@ -70,6 +79,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
     | '/services/ux-ui-design'
@@ -77,6 +87,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
     | '/services/ux-ui-design'
@@ -84,6 +95,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
     | '/services/ux-ui-design'
@@ -92,6 +104,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   ServicesDigitalBusinessLaunchPackageRoute: typeof ServicesDigitalBusinessLaunchPackageRoute
   ServicesSeoContentStrategyRoute: typeof ServicesSeoContentStrategyRoute
   ServicesUxUiDesignRoute: typeof ServicesUxUiDesignRoute
@@ -105,6 +118,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/digital-business-launch-package': {
@@ -140,6 +160,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   ServicesDigitalBusinessLaunchPackageRoute:
     ServicesDigitalBusinessLaunchPackageRoute,
   ServicesSeoContentStrategyRoute: ServicesSeoContentStrategyRoute,
