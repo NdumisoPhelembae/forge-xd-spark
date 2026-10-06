@@ -65,35 +65,20 @@ function Index() {
             <p className="max-w-lg text-base leading-7 text-muted-foreground md:justify-self-end">From the first idea to sustained growth, we assemble the right mix of design, technology and strategic thinking.</p>
           </div>
           <div className="border-t border-foreground/20">
-            {services.map(({ number, title, description, href }) => href === "/services/web-design-development" ? (
-              <Link key={number} to="/services/web-design-development" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
+            {services.map(({ number, title, description, href }) => {
+              const rowClassName = "service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center";
+              const row = (<>
                 <span className="text-xs font-bold text-brand-orange">{number}</span>
                 <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
                 <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
                 <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
-              </Link>
-            ) : href === "/services/digital-business-launch-package" ? (
-              <Link key={number} to="/services/digital-business-launch-package" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
-                <span className="text-xs font-bold text-brand-orange">{number}</span>
-                <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
-                <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
-                <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
-              </Link>
-            ) : href === "/services/seo-content-strategy" ? (
-              <Link key={number} to="/services/seo-content-strategy" className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
-                <span className="text-xs font-bold text-brand-orange">{number}</span>
-                <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
-                <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
-                <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
-              </Link>
-            ) : (
-              <a key={number} href={href} className="service-link group grid gap-4 border-b border-foreground/20 py-8 md:grid-cols-[80px_1fr_1fr_40px] md:items-center">
-                <span className="text-xs font-bold text-brand-orange">{number}</span>
-                <h3 className="font-display text-2xl font-medium md:text-3xl">{title}</h3>
-                <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
-                <ArrowUpRight className="service-arrow text-brand-olive" size={24} />
-              </a>
-            ))}
+              </>);
+              if (href === "/services/web-design-development") return <Link key={number} to="/services/web-design-development" className={rowClassName}>{row}</Link>;
+              if (href === "/services/ux-ui-design") return <Link key={number} to="/services/ux-ui-design" className={rowClassName}>{row}</Link>;
+              if (href === "/services/digital-business-launch-package") return <Link key={number} to="/services/digital-business-launch-package" className={rowClassName}>{row}</Link>;
+              if (href === "/services/seo-content-strategy") return <Link key={number} to="/services/seo-content-strategy" className={rowClassName}>{row}</Link>;
+              return <a key={number} href={href} className={rowClassName}>{row}</a>;
+            })}
           </div>
         </div>
       </section>
