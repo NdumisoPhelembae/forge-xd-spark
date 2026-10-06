@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesDigitalBusinessLaunchPackageRouteImport } from './routes/services.digital-business-launch-package'
 import { Route as ServicesSeoContentStrategyRouteImport } from './routes/services.seo-content-strategy'
+import { Route as ServicesUxUiDesignRouteImport } from './routes/services.ux-ui-design'
 import { Route as ServicesWebDesignDevelopmentRouteImport } from './routes/services.web-design-development'
 
 const IndexRoute = IndexRouteImport.update({
@@ -31,6 +32,11 @@ const ServicesSeoContentStrategyRoute =
     path: '/services/seo-content-strategy',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ServicesUxUiDesignRoute = ServicesUxUiDesignRouteImport.update({
+  id: '/services/ux-ui-design',
+  path: '/services/ux-ui-design',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesWebDesignDevelopmentRoute =
   ServicesWebDesignDevelopmentRouteImport.update({
     id: '/services/web-design-development',
@@ -42,12 +48,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
+  '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
+  '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRoutesById {
@@ -55,6 +63,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
+  '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
 }
 export interface FileRouteTypes {
@@ -63,18 +72,21 @@ export interface FileRouteTypes {
     | '/'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
+    | '/services/ux-ui-design'
     | '/services/web-design-development'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
+    | '/services/ux-ui-design'
     | '/services/web-design-development'
   id:
     | '__root__'
     | '/'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
+    | '/services/ux-ui-design'
     | '/services/web-design-development'
   fileRoutesById: FileRoutesById
 }
@@ -82,6 +94,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ServicesDigitalBusinessLaunchPackageRoute: typeof ServicesDigitalBusinessLaunchPackageRoute
   ServicesSeoContentStrategyRoute: typeof ServicesSeoContentStrategyRoute
+  ServicesUxUiDesignRoute: typeof ServicesUxUiDesignRoute
   ServicesWebDesignDevelopmentRoute: typeof ServicesWebDesignDevelopmentRoute
 }
 
@@ -108,6 +121,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSeoContentStrategyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/ux-ui-design': {
+      id: '/services/ux-ui-design'
+      path: '/services/ux-ui-design'
+      fullPath: '/services/ux-ui-design'
+      preLoaderRoute: typeof ServicesUxUiDesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/web-design-development': {
       id: '/services/web-design-development'
       path: '/services/web-design-development'
@@ -123,6 +143,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesDigitalBusinessLaunchPackageRoute:
     ServicesDigitalBusinessLaunchPackageRoute,
   ServicesSeoContentStrategyRoute: ServicesSeoContentStrategyRoute,
+  ServicesUxUiDesignRoute: ServicesUxUiDesignRoute,
   ServicesWebDesignDevelopmentRoute: ServicesWebDesignDevelopmentRoute,
 }
 export const routeTree = rootRouteImport
