@@ -6,10 +6,10 @@ import logoAsset from "../assets/forgexd-logo-cropped.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ForgeXD | Web Design, Marketing & Digital Strategy" },
-      { name: "description", content: "ForgeXD is a digital agency creating websites, campaigns, UX/UI and business strategies for ambitious brands." },
+      { title: "ForgeXD | Web Design, UX/UI & Digital Strategy" },
+      { name: "description", content: "ForgeXD is a digital agency creating websites, UX/UI design, SEO and business strategies for ambitious brands." },
       { property: "og:title", content: "ForgeXD | Forge What’s Next" },
-      { property: "og:description", content: "Web design, digital marketing, UX/UI and business strategy for ambitious brands." },
+      { property: "og:description", content: "Web design, UX/UI design, business strategy and SEO for ambitious brands." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -20,11 +20,10 @@ export const Route = createFileRoute("/")({
 function Index() {
   const services = [
     { number: "01", title: "Web design & development", description: "High-performing digital platforms shaped around your customers and your business.", href: "/services/web-design-development" },
-    { number: "02", title: "Digital marketing", description: "Focused campaigns and content systems that turn attention into meaningful growth.", href: "#contact" },
-    { number: "03", title: "UX & UI design", description: "Clear, considered experiences that make complex products feel effortless to use.", href: "/services/ux-ui-design" },
-    { number: "04", title: "Digital business strategy", description: "Practical direction that connects your brand, technology and growth opportunities.", href: "#contact" },
-    { number: "05", title: "Digital Business Launch Package", description: "A complete digital foundation to launch, grow or move your business online with confidence.", href: "/services/digital-business-launch-package" },
-    { number: "06", title: "SEO & content strategy", description: "Technical SEO, content and measurement that turn search visibility into sustainable growth.", href: "/services/seo-content-strategy" },
+    { number: "02", title: "UX & UI design", description: "Clear, considered experiences that make complex products feel effortless to use.", href: "/services/ux-ui-design" },
+    { number: "03", title: "Digital business strategy", description: "Practical direction that connects your brand, technology and growth opportunities.", href: "#contact" },
+    { number: "04", title: "Digital Business Launch Package", description: "A complete digital foundation to launch, grow or move your business online with confidence.", href: "/services/digital-business-launch-package" },
+    { number: "05", title: "SEO & content strategy", description: "Technical SEO, content and measurement that turn search visibility into sustainable growth.", href: "/services/seo-content-strategy" },
   ];
 
   return (
@@ -51,7 +50,7 @@ function Index() {
             <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">Independent digital agency · South Africa</p>
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We shape digital experiences for what’s next.</h1>
             <div className="mt-8 flex flex-col items-start justify-between gap-7 md:flex-row md:items-end">
-              <p className="max-w-xl text-base leading-7 text-primary-foreground/68 md:text-lg">ForgeXD brings web design, marketing, UX/UI and business strategy together to move ambitious brands forward.</p>
+              <p className="max-w-xl text-base leading-7 text-primary-foreground/68 md:text-lg">ForgeXD brings web design, UX/UI and business strategy together to move ambitious brands forward.</p>
               <a href="#services" className="flex items-center gap-3 text-sm font-semibold uppercase text-primary-foreground">Explore our work <span className="flex h-10 w-10 items-center justify-center bg-brand-orange"><ArrowDownRight size={18} /></span></a>
             </div>
           </div>
