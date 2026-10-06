@@ -6,7 +6,7 @@ import logoAsset from "../assets/forgexd-logo-cropped.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ForgeXD | Web Design, Marketing & Digital Strategy" },
+      { title: "ForgeXD | Web Design, UX/UI & Digital Strategy" },
       { name: "description", content: "ForgeXD is a digital agency creating websites, UX/UI design, SEO and business strategies for ambitious brands." },
       { property: "og:title", content: "ForgeXD | Forge What’s Next" },
       { property: "og:description", content: "Web design, UX/UI design, business strategy and SEO for ambitious brands." },
