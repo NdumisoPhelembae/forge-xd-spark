@@ -119,6 +119,33 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // After a new deploy, old chunk hashes disappear. Reload once to fetch fresh files.
+  useEffect(() => {
+    const KEY = "forgexd-chunk-reload";
+    const reloadOnce = () => {
+      if (sessionStorage.getItem(KEY)) return;
+      sessionStorage.setItem(KEY, "1");
+      window.location.reload();
+    };
+    const onPreloadError = (e: Event) => {
+      e.preventDefault();
+      reloadOnce();
+    };
+    const onRejection = (e: PromiseRejectionEvent) => {
+      const msg = String((e.reason as Error)?.message ?? e.reason);
+      if (/Failed to fetch dynamically imported module|Importing a module script failed/i.test(msg)) reloadOnce();
+    };
+    window.addEventListener("vite:preloadError", onPreloadError);
+    window.addEventListener("unhandledrejection", onRejection);
+    const clear = window.setTimeout(() => sessionStorage.removeItem(KEY), 10000);
+    return () => {
+      window.removeEventListener("vite:preloadError", onPreloadError);
+      window.removeEventListener("unhandledrejection", onRejection);
+      window.clearTimeout(clear);
+    };
+  }, []);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
