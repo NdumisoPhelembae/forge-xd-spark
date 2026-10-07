@@ -188,3 +188,13 @@
   .service-arrow { transition: transform 180ms ease; }
   .service-link:hover .service-arrow { transform: translate(4px, -4px); }
 }
+
+.article-body { font-size: 1.0625rem; line-height: 1.85; color: var(--color-foreground); }
+.article-body > * + * { margin-top: 1.4em; }
+.article-body h2 { font-family: var(--font-display); font-size: 1.875rem; line-height: 1.2; font-weight: 500; margin-top: 2.2em; }
+.article-body strong { font-weight: 700; }
+.article-body ul { list-style: none; padding: 0; }
+.article-body ul li { position: relative; padding-left: 1.5rem; margin-top: .5em; }
+.article-body ul li::before { content: ""; position: absolute; left: 0; top: .75em; width: .5rem; height: .5rem; background: var(--color-primary); }
+.article-body blockquote { border-left: 2px solid var(--color-primary); padding: .25rem 0 .25rem 1.5rem; font-family: var(--font-display); font-size: 1.5rem; line-height: 1.4; }
+.article-body a { color: var(--color-primary); text-decoration: underline; }
