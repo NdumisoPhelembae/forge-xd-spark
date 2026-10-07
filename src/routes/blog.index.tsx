@@ -37,7 +37,7 @@ function BlogIndex() {
         </div>
       </section>
 
-      {active === "All" && (
+      {active === "All" && featured && (
         <section className="px-5 pt-16 md:px-10 md:pt-24 lg:px-16">
           <Link to="/blog/$slug" params={{ slug: featured.slug }} className="group mx-auto grid max-w-[1400px] gap-8 border-b border-foreground/20 pb-16 lg:grid-cols-[1.3fr_1fr] lg:items-center">
             <div className="aspect-[16/10] overflow-hidden bg-brand-ink"><img src={featured.coverImage} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
