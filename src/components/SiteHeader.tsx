@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Menu } from "lucide-react";
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 
 export function SiteHeader() {
@@ -14,7 +14,7 @@ export function SiteHeader() {
         <a className="hover:text-primary-foreground" href="/#contact">Contact</a>
       </nav>
       <a href="/#contact" className="hidden items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-semibold transition-colors hover:border-brand-orange hover:text-brand-orange md:flex">Start a project <ArrowUpRight size={16} /></a>
-      <a href="/#services" aria-label="Open services" className="flex h-10 w-10 items-center justify-center border border-primary-foreground/30 md:hidden"><span className="text-lg leading-none">≡</span></a>
+      <a href="/#services" aria-label="Open services" className="flex h-10 w-10 items-center justify-center border border-primary-foreground/30 md:hidden"><Menu size={19} /></a>
     </header>
   );
 }
