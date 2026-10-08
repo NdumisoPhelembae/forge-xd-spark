@@ -194,7 +194,7 @@ function About() {
           </div>
           <div>
             <p className="mb-4 text-xs font-bold uppercase text-brand-orange">The ForgeXD philosophy</p>
-            <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">But what your business needs <span className="text-brand-orange">next.</span></h2>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">But what your business needs next.</h2>
             <div className="mt-8 space-y-2 text-lg leading-8 text-muted-foreground">
               <p>Not just what exists today.</p>
               <p>Not just what looks good today.</p>
