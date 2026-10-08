@@ -102,7 +102,7 @@ function About() {
         <div className="mx-auto grid max-w-[1400px] gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <div>
             <p className="mb-4 text-xs font-bold uppercase text-brand-orange">The story</p>
-            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Built from <span className="text-brand-orange">doing.</span></h2>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Built from doing.</h2>
           </div>
           <div className="space-y-6 text-base leading-8 text-muted-foreground md:text-lg">
             <p>ForgeXD grew from years of working across digital businesses, websites, e-commerce, education, SEO and digital strategy.</p>
@@ -118,7 +118,7 @@ function About() {
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-14 max-w-3xl">
             <p className="mb-4 text-xs font-bold uppercase text-brand-orange">Our point of view</p>
-            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">We don&rsquo;t believe in digital for <span className="text-brand-orange">digital&rsquo;s sake.</span></h2>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">We don&rsquo;t believe in digital for digital&rsquo;s sake.</h2>
           </div>
           <div className="mb-14 max-w-2xl space-y-2 text-base leading-8 text-primary-foreground/72 md:text-lg">
             <p>We believe technology should make things clearer.</p>
@@ -144,7 +144,7 @@ function About() {
           <div className="mb-14 grid gap-6 md:grid-cols-2 md:items-end">
             <div>
               <p className="mb-4 text-xs font-bold uppercase text-brand-orange">How we work</p>
-              <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">One studio.<br /><span className="text-brand-orange">Connected thinking.</span></h2>
+              <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">One studio. Connected thinking.</h2>
             </div>
             <p className="max-w-lg text-base leading-7 text-muted-foreground md:justify-self-end">We bring strategy, design, technology and growth together so every part of your digital presence supports the next.</p>
           </div>
@@ -169,7 +169,7 @@ function About() {
           <div className="mb-14 grid gap-6 md:grid-cols-2 md:items-end">
             <div>
               <p className="mb-4 text-xs font-bold uppercase text-brand-orange">Who we work with</p>
-              <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Built for businesses <span className="text-brand-orange">moving forward.</span></h2>
+              <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Built for businesses moving forward.</h2>
             </div>
             <p className="max-w-lg text-base leading-7 text-primary-foreground/65 md:justify-self-end">We work with founders, growing businesses and established companies who want to make better use of digital to achieve their goals.</p>
           </div>
@@ -212,7 +212,7 @@ function About() {
           <div />
           <div>
             <p className="mb-5 text-xs font-bold uppercase text-brand-orange">Ready to move forward</p>
-            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Let&rsquo;s build what&rsquo;s <span className="text-brand-orange">next.</span></h2>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Let&rsquo;s build what&rsquo;s next.</h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">Tell us where you are, where you want to go, and what needs to change.</p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <a href="mailto:hello@forgexd.co.za?subject=Start%20a%20project" className="inline-flex items-center justify-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-ember">Start a project <ArrowUpRight size={17} /></a>
