@@ -40,7 +40,16 @@ function PostNotFound() {
 
 function BlogPost() {
   const { post } = Route.useLoaderData();
-  const related = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const [related, setRelated] = useState<BlogPost[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    void getBlogPosts({}).then((all) => {
+      if (!cancelled) setRelated(all.filter((p) => p.slug !== post.slug).slice(0, 3));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [post.slug]);
 
   return (
     <main className="overflow-hidden bg-background text-foreground">

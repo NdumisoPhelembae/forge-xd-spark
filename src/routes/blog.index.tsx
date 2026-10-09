@@ -23,6 +23,7 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogIndex() {
+  const posts = Route.useLoaderData();
   const [active, setActive] = useState<string>("All");
   const [featured, ...rest] = posts;
   const list = active === "All" ? rest : posts.filter((p) => p.category === active);
