@@ -2,11 +2,12 @@ import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { SiteHeader } from "../components/SiteHeader";
 import { NewsletterSignup } from "../components/NewsletterSignup";
-import { formatDate, getPost, posts } from "../lib/blog";
+import { formatDate } from "../lib/blog";
+import { getBlogPost, getBlogPosts } from "../lib/wordpress";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getPost(params.slug);
+  loader: async ({ params }) => {
+    const post = await getBlogPost({ data: params.slug });
     if (!post) throw notFound();
     return { post };
   },
