@@ -1,12 +1,14 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { SiteHeader } from "../components/SiteHeader";
 import { NewsletterSignup } from "../components/NewsletterSignup";
-import { formatDate, getPost, posts } from "../lib/blog";
+import { formatDate, type BlogPost } from "../lib/blog";
+import { getBlogPost, getBlogPosts } from "../lib/wordpress";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getPost(params.slug);
+  loader: async ({ params }) => {
+    const post = await getBlogPost({ data: params.slug });
     if (!post) throw notFound();
     return { post };
   },
@@ -39,7 +41,16 @@ function PostNotFound() {
 
 function BlogPost() {
   const { post } = Route.useLoaderData();
-  const related = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const [related, setRelated] = useState<BlogPost[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    void getBlogPosts({}).then((all) => {
+      if (!cancelled) setRelated(all.filter((p) => p.slug !== post.slug).slice(0, 3));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [post.slug]);
 
   return (
     <main className="overflow-hidden bg-background text-foreground">
@@ -56,10 +67,12 @@ function BlogPost() {
 
       <article className="mx-auto max-w-3xl px-5 pb-16 pt-28 md:px-0">
         <p className="text-xl leading-8 text-foreground/80">{post.excerpt}</p>
-        <aside className="my-12 border-l-2 border-brand-orange bg-accent p-6 md:p-8">
-          <p className="mb-4 text-xs font-bold uppercase text-brand-ember">Key takeaways</p>
-          <ul className="space-y-2">{post.takeaways.map((t) => <li key={t} className="flex gap-3 text-sm leading-6"><span className="mt-2 h-1.5 w-1.5 shrink-0 bg-brand-olive" />{t}</li>)}</ul>
-        </aside>
+        {post.takeaways.length > 0 && (
+          <aside className="my-12 border-l-2 border-brand-orange bg-accent p-6 md:p-8">
+            <p className="mb-4 text-xs font-bold uppercase text-brand-ember">Key takeaways</p>
+            <ul className="space-y-2">{post.takeaways.map((t) => <li key={t} className="flex gap-3 text-sm leading-6"><span className="mt-2 h-1.5 w-1.5 shrink-0 bg-brand-olive" />{t}</li>)}</ul>
+          </aside>
+        )}
         <div className="article-body" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
         <div className="mt-16 flex items-center gap-4 border-t border-foreground/20 pt-8">
           <span className="flex h-12 w-12 items-center justify-center bg-brand-ink font-display text-sm text-brand-orange">XD</span>

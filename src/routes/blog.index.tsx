@@ -3,10 +3,12 @@ import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { SiteHeader } from "../components/SiteHeader";
 import { NewsletterSignup } from "../components/NewsletterSignup";
-import { categories, formatDate, posts } from "../lib/blog";
+import { categories, formatDate } from "../lib/blog";
+import { getBlogPosts } from "../lib/wordpress";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 
 export const Route = createFileRoute("/blog/")({
+  loader: () => getBlogPosts({}),
   head: () => ({
     meta: [
       { title: "Journal | ForgeXD — Strategy, Design & Growth" },
@@ -21,6 +23,7 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogIndex() {
+  const posts = Route.useLoaderData();
   const [active, setActive] = useState<string>("All");
   const [featured, ...rest] = posts;
   const list = active === "All" ? rest : posts.filter((p) => p.category === active);
