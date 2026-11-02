@@ -4,7 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { posts as samplePosts, type BlogPost } from "./blog";
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/wordpress";
+const CMS_URL = "https://cms.forgexd.co.za";
 
 type WpMedia = { source_url?: string };
 type WpTerm = { name?: string };
@@ -48,7 +48,7 @@ const estimateReadTime = (html: string) => {
 };
 
 const FALLBACK_COVER =
-  "https://forgexd.co.za/wp-content/uploads/forgexd-default-cover.jpg";
+  "https://cms.forgexd.co.za/wp-content/uploads/forgexd-default-cover.jpg";
 
 function mapPost(wp: WpPost): BlogPost {
   const category = wp._embedded?.["wp:term"]?.[0]?.[0]?.name ?? "Journal";
@@ -73,18 +73,10 @@ function mapPost(wp: WpPost): BlogPost {
 const isRealPost = (p: BlogPost) => p.slug !== "hello-world";
 
 async function fetchWpPosts(): Promise<BlogPost[]> {
-  const lovablyKey = process.env["LOVABLE_API_KEY"];
-  const wpKey = process.env["WORDPRESS_API_KEY"];
-  if (!lovablyKey || !wpKey) return [];
-
+  // Published posts are public, so we read them straight from the CMS.
   const response = await fetch(
-    `${GATEWAY_URL}/posts?per_page=50&status=publish&_embed=1`,
-    {
-      headers: {
-        Authorization: `Bearer ${lovablyKey}`,
-        "X-Connection-Api-Key": wpKey,
-      },
-    },
+    `${CMS_URL}/wp-json/wp/v2/posts?per_page=50&status=publish&_embed=1`,
+    { headers: { Accept: "application/json" } },
   );
   if (!response.ok) {
     const body = await response.text();
