@@ -29,27 +29,13 @@ function Index() {
   return (
     <main className="overflow-hidden bg-background text-foreground">
       <section className="relative bg-brand-ink text-primary-foreground">
-        <img className="absolute inset-0 h-full w-full object-cover opacity-75" src={signatureAsset.url} alt="ForgeXD geometric signature pattern" />
+        <img className="absolute inset-0 h-full w-full object-cover opacity-75" src={signatureBackground} alt="ForgeXD geometric signature pattern" />
         <div className="signature-overlay absolute inset-0" />
 
-        <header className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-5 py-6 md:px-10 lg:px-16">
-          <a href="#top" aria-label="ForgeXD home" className="flex items-center">
-            <img src={logoAsset} alt="ForgeXD logo" className="h-11 w-auto md:h-[50px]" />
-          </a>
-          <nav className="hidden items-center gap-8 text-sm text-primary-foreground/75 md:flex" aria-label="Main navigation">
-            <a className="hover:text-primary-foreground" href="#services">Services</a>
-            <Link className="hover:text-primary-foreground" to="/about">About</Link>
-            <Link className="hover:text-primary-foreground" to="/blog">Blog</Link>
-            <a className="hover:text-primary-foreground" href="#approach">Approach</a>
-            <a className="hover:text-primary-foreground" href="#contact">Contact</a>
-          </nav>
-          <a href="#contact" className="hidden items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-semibold transition-colors hover:border-brand-orange hover:text-brand-orange md:flex">Start a project <ArrowUpRight size={16} /></a>
-          <a href="#services" aria-label="Open services" className="flex h-10 w-10 items-center justify-center border border-primary-foreground/30 md:hidden"><Menu size={19} /></a>
-        </header>
+        <SiteHeader />
 
         <div id="top" className="relative z-10 mx-auto max-w-[1400px] px-5 pb-[9svh] pt-[7svh] md:px-10 md:pt-[9svh] lg:px-16">
           <div className="max-w-4xl">
-            <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">Independent digital agency · South Africa</p>
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We shape digital experiences for what’s next.</h1>
             <div className="mt-8 flex flex-col items-start justify-between gap-7 md:flex-row md:items-end">
               <p className="max-w-xl text-base leading-7 text-primary-foreground/68 md:text-lg">ForgeXD brings web design, UX/UI and business strategy together to move ambitious brands forward.</p>
