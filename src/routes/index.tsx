@@ -1,7 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowDownRight, ArrowUpRight, Menu } from "lucide-react";
-import signatureAsset from "../assets/forgexd-signature-background.png.asset.json";
-import logoAsset from "../assets/forgexd-logo-cropped.png";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import signatureBackground from "../assets/forgexd-signature-background.webp";
+import { SiteHeader } from "../components/SiteHeader";
 
 export const Route = createFileRoute("/")({
   head: () => ({
