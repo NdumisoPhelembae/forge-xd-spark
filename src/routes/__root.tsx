@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -12,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getAnalyticsMeasurementId } from "../lib/analytics";
 
 function NotFoundComponent() {
   return (
@@ -75,7 +77,8 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: () => getAnalyticsMeasurementId(),
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -95,6 +98,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600&display=swap" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
+    // Google Analytics on every page, present and future. The measurement ID
+    // is loaded from the secret store on the server.
+    scripts: loaderData
+      ? [
+          {
+            src: `https://www.googletagmanager.com/gtag/js?id=${loaderData}`,
+            async: true,
+          },
+          {
+            type: "text/javascript",
+            children:
+              "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '" +
+              loaderData +
+              "');",
+          },
+        ]
+      : [],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -145,6 +165,13 @@ function RootComponent() {
     };
   }, []);
 
+  // gtag only tracks the initial page load on its own — report every route
+  // change as a page view so client-side navigation is counted too.
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  useEffect(() => {
+    const withGtag = window as unknown as { gtag?: (...args: unknown[]) => void };
+    withGtag.gtag?.("event", "page_view", { page_path: pathname, page_title: document.title });
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
