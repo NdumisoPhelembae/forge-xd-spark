@@ -20,6 +20,17 @@ export type BlogPost = {
 
 export const categories = ["All", "Strategy", "UX & UI", "Web development", "SEO", "Guides"] as const;
 
+// Author profile shown on every blog post.
+export const siteAuthor = {
+  name: "Ndumiso Khoza",
+  role: "Founder & CEO",
+  headshot: "https://cms.forgexd.co.za/wp-content/uploads/2026/11/Ndumiso-Headshot.png",
+  credentials: ["BCom in Marketing Management", "NQF Level 5 Business Analysis Support"],
+  summary:
+    "Ndumiso Khoza is a digital entrepreneur and strategist with experience spanning digital marketing, search engine optimisation, web development and business strategy. He is passionate about the intersection of technology, business and digital experiences, helping organisations understand opportunities, solve problems and build sustainable digital ecosystems.",
+  tagline: "Founder of ForgeXD",
+} as const;
+
 export const posts: BlogPost[] = [
   {
     id: 1,
