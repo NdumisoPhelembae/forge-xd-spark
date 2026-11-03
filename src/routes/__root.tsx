@@ -100,17 +100,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     // Google Analytics on every page, present and future. The measurement ID
     // is loaded from the secret store on the server.
-    scripts: loaderData?.gaMeasurementId
+    scripts: loaderData
       ? [
           {
-            src: `https://www.googletagmanager.com/gtag/js?id=${loaderData.gaMeasurementId}`,
+            src: `https://www.googletagmanager.com/gtag/js?id=${loaderData}`,
             async: true,
           },
           {
             type: "text/javascript",
             children:
               "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '" +
-              loaderData.gaMeasurementId +
+              loaderData +
               "');",
           },
         ]
