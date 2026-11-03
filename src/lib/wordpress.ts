@@ -2,7 +2,7 @@
 // Falls back to the local sample posts when WordPress has no real posts yet
 // or the gateway is unreachable, so the blog never renders empty.
 import { createServerFn } from "@tanstack/react-start";
-import { posts as samplePosts, type BlogPost } from "./blog";
+import { posts as samplePosts, siteAuthor, type BlogPost } from "./blog";
 
 const CMS_URL = "https://cms.forgexd.co.za";
 
@@ -63,7 +63,7 @@ function mapPost(wp: WpPost): BlogPost {
     publishedAt: wp.date.slice(0, 10),
     readTime: estimateReadTime(wp.content.rendered),
     coverImage: cover || FALLBACK_COVER,
-    author: { name: decodeEntities(authorName), role: "ForgeXD" },
+    author: { name: siteAuthor.name, role: siteAuthor.role },
     takeaways: [],
     contentHtml: wp.content.rendered,
   };

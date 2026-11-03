@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { SiteHeader } from "../components/SiteHeader";
 import { NewsletterSignup } from "../components/NewsletterSignup";
-import { formatDate, type BlogPost } from "../lib/blog";
+import { formatDate, siteAuthor, type BlogPost } from "../lib/blog";
 import { getBlogPost, getBlogPosts } from "../lib/wordpress";
 
 export const Route = createFileRoute("/blog/$slug")({
