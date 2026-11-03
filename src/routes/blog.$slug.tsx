@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { SiteHeader } from "../components/SiteHeader";
 import { NewsletterSignup } from "../components/NewsletterSignup";
-import { formatDate, type BlogPost } from "../lib/blog";
+import { formatDate, siteAuthor, type BlogPost } from "../lib/blog";
 import { getBlogPost, getBlogPosts } from "../lib/wordpress";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -74,10 +74,31 @@ function BlogPost() {
           </aside>
         )}
         <div className="article-body" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
-        <div className="mt-16 flex items-center gap-4 border-t border-foreground/20 pt-8">
-          <span className="flex h-12 w-12 items-center justify-center bg-brand-ink font-display text-sm text-brand-orange">XD</span>
-          <div><p className="font-semibold">{post.author.name}</p><p className="text-sm text-muted-foreground">{post.author.role}</p></div>
-        </div>
+        <aside className="mt-16 border-t border-foreground/20 pt-10">
+          <div className="flex items-center gap-5">
+            <img src={siteAuthor.headshot} alt={siteAuthor.name} className="h-16 w-16 shrink-0 rounded-full object-cover" />
+            <div>
+              <p className="font-display text-xl font-medium">{siteAuthor.name}</p>
+              <p className="mt-1 text-sm font-semibold text-brand-orange">{siteAuthor.role}</p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <p className="text-xs font-bold uppercase tracking-wide text-foreground">Credentials</p>
+            <ul className="mt-3 space-y-2">
+              {siteAuthor.credentials.map((c) => (
+                <li key={c} className="flex gap-3 text-sm leading-6 text-foreground/80">
+                  <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-brand-olive" />
+                  {c}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-8">
+            <p className="text-xs font-bold uppercase tracking-wide text-foreground">Professional summary</p>
+            <p className="mt-3 text-sm leading-6 text-foreground/80">{siteAuthor.summary}</p>
+          </div>
+          <p className="mt-8 text-sm text-muted-foreground">{siteAuthor.tagline}</p>
+        </aside>
         <div className="mt-16"><NewsletterSignup title="Get the next one first." copy="Join the ForgeXD letter for new articles, templates and guides." /></div>
       </article>
 

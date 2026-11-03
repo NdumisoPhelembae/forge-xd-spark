@@ -20,6 +20,17 @@ export type BlogPost = {
 
 export const categories = ["All", "Strategy", "UX & UI", "Web development", "SEO", "Guides"] as const;
 
+// Author profile shown on every blog post.
+export const siteAuthor = {
+  name: "Ndumiso Khoza",
+  role: "Founder & CEO",
+  headshot: "https://cms.forgexd.co.za/wp-content/uploads/2026/11/Ndumiso-Headshot.png",
+  credentials: ["BCom in Marketing Management", "NQF Level 5 Business Analysis Support"],
+  summary:
+    "Ndumiso Khoza is a digital entrepreneur and strategist with experience spanning digital marketing, search engine optimisation, web development and business strategy. He is passionate about the intersection of technology, business and digital experiences, helping organisations understand opportunities, solve problems and build sustainable digital ecosystems.",
+  tagline: "Founder of ForgeXD",
+} as const;
+
 export const posts: BlogPost[] = [
   {
     id: 1,
@@ -30,7 +41,7 @@ export const posts: BlogPost[] = [
     publishedAt: "2026-09-28",
     readTime: "7 min read",
     coverImage: aboutHero,
-    author: { name: "ForgeXD Studio", role: "Strategy team" },
+    author: { name: "Ndumiso Khoza", role: "Founder & CEO" },
     takeaways: ["Define who you serve before what you build", "Your website is a sales tool, not a brochure", "Launch small, measure, then expand"],
     contentHtml: `<p>Most new businesses start with the visible things — a logo, a domain, a homepage. But the businesses that grow fastest start somewhere less glamorous: a clear answer to <strong>who they serve and why it matters</strong>.</p>
 <h2>Start with the customer, not the canvas</h2>
@@ -51,7 +62,7 @@ export const posts: BlogPost[] = [
     publishedAt: "2026-09-15",
     readTime: "6 min read",
     coverImage: uxShowcase,
-    author: { name: "ForgeXD Studio", role: "Design team" },
+    author: { name: "Ndumiso Khoza", role: "Founder & CEO" },
     takeaways: ["Friction has a measurable cost", "Research is cheaper than rebuilds", "Design systems keep teams fast"],
     contentHtml: `<p>When people hear "UX", they often picture colours and buttons. In reality, UX is about <strong>removing the reasons people give up</strong>.</p>
 <h2>Friction has a price</h2>
@@ -69,7 +80,7 @@ export const posts: BlogPost[] = [
     publishedAt: "2026-08-30",
     readTime: "8 min read",
     coverImage: webShowcase,
-    author: { name: "ForgeXD Studio", role: "Search team" },
+    author: { name: "Ndumiso Khoza", role: "Founder & CEO" },
     takeaways: ["Fix technical basics first", "Write for intent, not keywords", "Local listings matter more than you think"],
     contentHtml: `<p>Search visibility compounds. The earlier the foundations are in place, the more every new page pays off.</p>
 <h2>Technical basics</h2>
@@ -86,7 +97,7 @@ export const posts: BlogPost[] = [
     publishedAt: "2026-08-12",
     readTime: "9 min read",
     coverImage: philosophy,
-    author: { name: "ForgeXD Studio", role: "Design team" },
+    author: { name: "Ndumiso Khoza", role: "Founder & CEO" },
     takeaways: ["Start with tokens: colour, type, spacing", "Document decisions, not just components", "Grow it from real product needs"],
     contentHtml: `<p>A design system is a shared language between design and development. It doesn't need to be huge to be useful.</p>
 <h2>Start with tokens</h2>
