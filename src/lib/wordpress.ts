@@ -53,7 +53,6 @@ const FALLBACK_COVER =
 function mapPost(wp: WpPost): BlogPost {
   const category = wp._embedded?.["wp:term"]?.[0]?.[0]?.name ?? "Journal";
   const cover = wp._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
-  const authorName = wp._embedded?.author?.[0]?.name ?? "ForgeXD Studio";
   return {
     id: wp.id,
     slug: wp.slug,
