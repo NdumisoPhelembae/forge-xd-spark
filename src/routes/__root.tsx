@@ -76,7 +76,8 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: () => getAnalyticsMeasurementId(),
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -96,6 +97,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600&display=swap" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
+    // Google Analytics on every page, present and future. The measurement ID
+    // is loaded from the secret store on the server.
+    scripts: loaderData?.gaMeasurementId
+      ? [
+          {
+            src: `https://www.googletagmanager.com/gtag/js?id=${loaderData.gaMeasurementId}`,
+            async: true,
+          },
+          {
+            type: "text/javascript",
+            children:
+              "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '" +
+              loaderData.gaMeasurementId +
+              "');",
+          },
+        ]
+      : [],
   }),
   shellComponent: RootShell,
   component: RootComponent,
