@@ -165,6 +165,13 @@ function RootComponent() {
     };
   }, []);
 
+  // gtag only tracks the initial page load on its own — report every route
+  // change as a page view so client-side navigation is counted too.
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  useEffect(() => {
+    const withGtag = window as unknown as { gtag?: (...args: unknown[]) => void };
+    withGtag.gtag?.("event", "page_view", { page_path: pathname, page_title: document.title });
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
