@@ -4,6 +4,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
 export const getAnalyticsMeasurementId = createServerFn({ method: "GET" }).handler(() => {
-  const id = process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID?.trim();
+  const id = process.env["GOOGLE_ANALYTICS_MEASUREMENT_ID"]?.trim();
   return id || null;
 });
