@@ -4,6 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 export const getAnalyticsMeasurementId = createServerFn({ method: "GET" }).handler(() => {
+  // Public GA4 tag ID, embedded so self-hosted servers (xCloud) need no env setup.
   const id = process.env["GOOGLE_ANALYTICS_MEASUREMENT_ID"]?.trim();
-  return id || null;
+  return id || "G-TCB0TLQS0M";
 });
