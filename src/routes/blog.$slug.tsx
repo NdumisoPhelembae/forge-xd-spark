@@ -97,7 +97,6 @@ function BlogPost() {
             <p className="text-xs font-bold uppercase tracking-wide text-foreground">Professional summary</p>
             <p className="mt-3 text-sm leading-6 text-foreground/80">{siteAuthor.summary}</p>
           </div>
-          <p className="mt-8 text-sm text-muted-foreground">{siteAuthor.tagline}</p>
         </aside>
         <div className="mt-16"><NewsletterSignup title="Get the next one first." copy="Join the ForgeXD letter for new articles, templates and guides." /></div>
       </article>
@@ -118,7 +117,7 @@ function BlogPost() {
       </section>
 
       <footer className="bg-brand-ink px-5 py-10 text-sm text-primary-foreground/55 md:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 sm:flex-row sm:justify-between"><span>© 2026 ForgeXD</span><a className="hover:text-primary-foreground" href="mailto:hello@forgexd.co.za">hello@forgexd.co.za</a></div>
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 sm:flex-row sm:justify-between"><span>© 2026 ForgeXD</span><Link className="hover:text-primary-foreground" to="/contact">Contact</Link></div>
       </footer>
     </main>
   );

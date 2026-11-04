@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ServicesDigitalBusinessLaunchPackageRouteImport } from './routes/services.digital-business-launch-package'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -65,6 +71,7 @@ const ServicesWebDesignDevelopmentRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/contact'
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/contact'
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/contact'
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
@@ -129,6 +141,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
   BlogSlugRoute: typeof BlogSlugRoute
   ServicesDigitalBusinessLaunchPackageRoute: typeof ServicesDigitalBusinessLaunchPackageRoute
   ServicesSeoContentStrategyRoute: typeof ServicesSeoContentStrategyRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -201,6 +221,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
   BlogSlugRoute: BlogSlugRoute,
   ServicesDigitalBusinessLaunchPackageRoute:
     ServicesDigitalBusinessLaunchPackageRoute,

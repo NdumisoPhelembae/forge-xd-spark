@@ -3,7 +3,6 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import heroImage from "../assets/about-hero.jpg";
-import philosophyImage from "../assets/about-philosophy.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -35,10 +34,10 @@ const beliefs = [
 ];
 
 const steps = [
-  { number: "01", title: "Strategy", copy: "Understand the problem." },
-  { number: "02", title: "Design", copy: "Shape the experience." },
-  { number: "03", title: "Build", copy: "Turn the idea into something real." },
-  { number: "04", title: "Scale", copy: "Improve what comes next." },
+  { number: "01", title: "Strategy", copy: "Understand the challenge. Find the opportunity." },
+  { number: "02", title: "Design", copy: "Shape purposeful experiences around real needs." },
+  { number: "03", title: "Build", copy: "Turn considered ideas into working digital solutions." },
+  { number: "04", title: "Scale", copy: "Refine, optimise and create room for growth." },
 ];
 
 const audiences = [
@@ -85,7 +84,7 @@ function About() {
               <a href="mailto:hello@forgexd.co.za?subject=Start%20a%20project" className="inline-flex items-center justify-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-ember">Start a project <ArrowUpRight size={17} /></a>
               <a href="/#services" className="inline-flex items-center justify-center gap-3 border border-primary-foreground/30 px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:border-brand-orange hover:text-brand-orange">See our work <ArrowRight size={17} /></a>
             </div>
-            <div className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold uppercase tracking-wide text-primary-foreground/55">
+            <div className="mt-12 hidden flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold uppercase tracking-wide text-primary-foreground/55 sm:flex">
               {["Strategy", "Design", "Build", "Scale"].map((step, index) => (
                 <span key={step} className="flex items-center gap-4">
                   {index > 0 && <span aria-hidden="true" className="h-px w-8 bg-primary-foreground/30" />}
@@ -189,7 +188,7 @@ function About() {
       <section className="px-5 py-20 md:px-10 md:py-28 lg:px-16">
         <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
           <div className="relative">
-            <img src={philosophyImage} alt="Concrete wall corner in warm evening light with plant shadows" loading="lazy" width={1536} height={1024} className="aspect-[3/2] w-full object-cover" />
+            <img src="https://cms.forgexd.co.za/wp-content/uploads/2026/11/Inclusive-Geometric-Design-Collaboration.png" alt="Team collaborating over an inclusive geometric design" loading="lazy" width={1536} height={1024} className="aspect-[3/2] w-full object-cover" />
             <div className="absolute bottom-0 left-0 h-2 w-1/3 bg-brand-orange" />
           </div>
           <div>
@@ -215,14 +214,14 @@ function About() {
             <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Let&rsquo;s build what&rsquo;s next.</h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">Tell us where you are, where you want to go, and what needs to change.</p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a href="mailto:hello@forgexd.co.za?subject=Start%20a%20project" className="inline-flex items-center justify-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-ember">Start a project <ArrowUpRight size={17} /></a>
-              <a href="mailto:hello@forgexd.co.za?subject=Book%20a%20call" className="inline-flex items-center justify-center gap-3 border border-primary-foreground/30 px-6 py-4 text-sm font-semibold transition-colors hover:border-brand-orange hover:text-brand-orange">Book a call <ArrowRight size={17} /></a>
+              <Link to="/contact" className="inline-flex items-center justify-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-ember">Start a project <ArrowUpRight size={17} /></Link>
+              <Link to="/contact" className="inline-flex items-center justify-center gap-3 border border-primary-foreground/30 px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:border-brand-orange hover:text-brand-orange">Book a call <ArrowRight size={17} /></Link>
             </div>
           </div>
         </div>
         <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between">
           <span>© 2026 ForgeXD</span>
-          <a href="mailto:hello@forgexd.co.za" className="hover:text-primary-foreground">hello@forgexd.co.za</a>
+          <Link to="/contact" className="hover:text-primary-foreground">Contact</Link>
         </footer>
       </section>
     </main>
