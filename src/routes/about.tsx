@@ -81,7 +81,7 @@ function About() {
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We forge what&rsquo;s <span className="text-brand-orange">next.</span></h1>
             <p className="mt-8 max-w-2xl text-base leading-7 text-primary-foreground/72 md:text-lg">ForgeXD is a digital studio helping businesses turn ideas, challenges and opportunities into better digital experiences.</p>
             <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <a href="mailto:hello@forgexd.co.za?subject=Start%20a%20project" className="inline-flex items-center justify-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-ember">Start a project <ArrowUpRight size={17} /></a>
+              <Link to="/contact" className="inline-flex items-center justify-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-ember">Start a project <ArrowUpRight size={17} /></Link>
               <a href="/#services" className="inline-flex items-center justify-center gap-3 border border-primary-foreground/30 px-6 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:border-brand-orange hover:text-brand-orange">See our work <ArrowRight size={17} /></a>
             </div>
             <div className="mt-12 hidden flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold uppercase tracking-wide text-primary-foreground/55 sm:flex">

@@ -210,7 +210,7 @@ function SeoContentStrategy() {
             <Link to="/contact" className="mt-8 inline-flex items-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold">Start a project <ArrowUpRight size={17} /></Link>
           </div>
         </div>
-        <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><Link to="/contact" className="hover:text-primary-foreground">hello@forgexd.co.za</Link></footer>
+        <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><Link to="/contact" className="hover:text-primary-foreground">Contact</Link></footer>
       </section>
     </main>
   );

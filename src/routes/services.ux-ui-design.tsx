@@ -169,7 +169,7 @@ function UxUiDesign() {
         <img src={signaturePattern} alt="" aria-hidden="true" loading="lazy" className="absolute -left-24 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 object-cover opacity-40" />
         <div className="signature-cta-overlay absolute inset-0" />
         <div className="relative mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.65fr_1fr] lg:items-end"><div /><div><p className="mb-5 text-xs font-bold uppercase text-brand-orange">Ready to design?</p><h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Have a product worth designing?</h2><p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">Let's turn the idea into an experience people can actually use.</p><Link to="/contact" className="mt-8 inline-flex items-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold">Start a project <ArrowUpRight size={17} /></Link></div></div>
-        <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><Link to="/contact" className="hover:text-primary-foreground">hello@forgexd.co.za</Link></footer>
+        <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><Link to="/contact" className="hover:text-primary-foreground">Contact</Link></footer>
       </section>
     </main>
   );
