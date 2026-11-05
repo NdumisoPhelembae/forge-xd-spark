@@ -19,11 +19,11 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const services = [
-    { number: "01", title: "Web design & development", description: "High-performing digital platforms shaped around your customers and your business.", href: "/services/web-design-development" },
-    { number: "02", title: "UX & UI design", description: "Clear, considered experiences that make complex products feel effortless to use.", href: "/services/ux-ui-design" },
-    { number: "03", title: "Digital business strategy", description: "Practical direction that connects your brand, technology and growth opportunities.", href: "#contact" },
-    { number: "04", title: "Digital Business Launch Package", description: "A complete digital foundation to launch, grow or move your business online with confidence.", href: "/services/digital-business-launch-package" },
-    { number: "05", title: "SEO & content strategy", description: "Technical SEO, content and measurement that turn search visibility into sustainable growth.", href: "/services/seo-content-strategy" },
+    { number: "01", title: "Web Design & Development", description: "Digital experiences designed around your customers, built around your goals and ready to grow with your business.", href: "/services/web-design-development" },
+    { number: "02", title: "UX & UI Design", description: "We turn complex ideas into intuitive, purposeful experiences that make every interaction count.", href: "/services/ux-ui-design" },
+    { number: "03", title: "Digital Business Strategy", description: "Clear direction to align your business goals, digital opportunities and the decisions that move you forward.", href: "#contact" },
+    { number: "04", title: "Digital Business Launch Package", description: "Everything you need to establish your digital foundation and take your business from idea to online presence.", href: "/services/digital-business-launch-package" },
+    { number: "05", title: "SEO & Content Strategy", description: "Connect your business with the right searches through purposeful content, technical foundations and sustainable visibility.", href: "/services/seo-content-strategy" },
   ];
 
   return (
@@ -38,7 +38,7 @@ function Index() {
           <div className="max-w-4xl">
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">We shape digital experiences for what’s next.</h1>
             <div className="mt-8 flex flex-col items-start justify-between gap-7 md:flex-row md:items-end">
-              <p className="max-w-xl text-base leading-7 text-primary-foreground/68 md:text-lg">ForgeXD brings web design, UX/UI and business strategy together to move ambitious brands forward.</p>
+              <p className="max-w-xl text-base leading-7 text-primary-foreground/68 md:text-lg">We turn business challenges and ambitious ideas into purposeful digital experiences, bringing strategy, design, technology and growth together to move your business forward.</p>
               <a href="#services" className="flex items-center gap-3 text-sm font-semibold uppercase text-primary-foreground">Explore our work <span className="flex h-10 w-10 items-center justify-center bg-brand-orange"><ArrowDownRight size={18} /></span></a>
             </div>
           </div>
@@ -49,7 +49,7 @@ function Index() {
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-12 grid gap-6 md:grid-cols-2 md:items-end">
             <div><p className="mb-4 text-xs font-bold uppercase text-brand-orange">What we do</p><h2 className="font-display text-4xl font-medium md:text-6xl">Built to create<br />momentum.</h2></div>
-            <p className="max-w-lg text-base leading-7 text-muted-foreground md:justify-self-end">From the first idea to sustained growth, we assemble the right mix of design, technology and strategic thinking.</p>
+            <p className="max-w-lg text-base leading-7 text-muted-foreground md:justify-self-end">From the first challenge to what comes next, we connect strategy, design and technology to turn ambitious ideas into meaningful digital progress.</p>
           </div>
           <div className="border-t border-foreground/20">
             {services.map(({ number, title, description, href }) => {
@@ -84,11 +84,12 @@ function Index() {
       <section id="contact" className="bg-brand-ink px-5 py-20 text-primary-foreground md:px-10 md:py-28 lg:px-16">
         <div className="mx-auto max-w-[1400px]">
           <p className="mb-5 text-xs font-bold uppercase text-brand-orange">Start something meaningful</p>
-          <a href="mailto:hello@forgexd.co.za" className="group flex items-end justify-between gap-6 border-b border-primary-foreground/30 pb-8">
+          <Link to="/contact" className="group flex items-end justify-between gap-6 border-b border-primary-foreground/30 pb-8">
             <h2 className="font-display text-4xl font-medium leading-tight md:text-7xl">Let’s forge<br />what’s next.</h2>
             <ArrowUpRight className="mb-2 shrink-0 text-brand-orange transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" size={40} />
           </a>
-          <footer className="mt-10 flex flex-col gap-4 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><a className="hover:text-primary-foreground" href="mailto:hello@forgexd.co.za">hello@forgexd.co.za</a></footer>
+          <p className="mt-8 max-w-2xl text-base leading-7 text-primary-foreground/65">Have a challenge worth solving? Let’s explore what we can build together.</p>
+          <footer className="mt-10 flex flex-col gap-4 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><Link className="hover:text-primary-foreground" to="/contact">Contact</Link></footer>
         </div>
       </section>
     </main>
