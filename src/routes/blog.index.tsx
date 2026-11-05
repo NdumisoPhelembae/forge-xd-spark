@@ -81,7 +81,7 @@ function BlogIndex() {
       </section>
 
       <footer className="bg-brand-ink px-5 py-10 text-sm text-primary-foreground/55 md:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 sm:flex-row sm:justify-between"><span>© 2026 ForgeXD</span><a className="hover:text-primary-foreground" href="mailto:hello@forgexd.co.za">hello@forgexd.co.za</a></div>
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 sm:flex-row sm:justify-between"><span>© 2026 ForgeXD</span><Link className="hover:text-primary-foreground" to="/contact">Contact</Link></div>
       </footer>
     </main>
   );

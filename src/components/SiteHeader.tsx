@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { label: "About", to: "/about" as const },
   { label: "Blog", to: "/blog" as const },
   { label: "Approach", href: "/#approach" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", to: "/contact" as const },
 ];
 
 export function SiteHeader() {
@@ -29,7 +29,7 @@ export function SiteHeader() {
             ),
           )}
         </nav>
-        <a href="/#contact" className="hidden items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-semibold transition-colors hover:border-brand-orange hover:text-brand-orange md:flex">Start a project <ArrowUpRight size={16} /></a>
+        <Link to="/contact" className="hidden items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-semibold transition-colors hover:border-brand-orange hover:text-brand-orange md:flex">Start a project <ArrowUpRight size={16} /></Link>
         <button
           type="button"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -51,9 +51,9 @@ export function SiteHeader() {
                 <a key={item.label} className="border-b border-primary-foreground/10 py-4 text-base text-primary-foreground/85" href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>
               ),
             )}
-            <a href="/#contact" onClick={() => setMenuOpen(false)} className="mt-4 flex items-center justify-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:border-brand-orange hover:text-brand-orange">
+            <Link to="/contact" onClick={() => setMenuOpen(false)} className="mt-4 flex items-center justify-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:border-brand-orange hover:text-brand-orange">
               Start a project <ArrowUpRight size={16} />
-            </a>
+            </Link>
           </nav>
         </div>
       )}

@@ -87,7 +87,7 @@ function Index() {
           <Link to="/contact" className="group flex items-end justify-between gap-6 border-b border-primary-foreground/30 pb-8">
             <h2 className="font-display text-4xl font-medium leading-tight md:text-7xl">Let’s forge<br />what’s next.</h2>
             <ArrowUpRight className="mb-2 shrink-0 text-brand-orange transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" size={40} />
-          </a>
+          </Link>
           <p className="mt-8 max-w-2xl text-base leading-7 text-primary-foreground/65">Have a challenge worth solving? Let’s explore what we can build together.</p>
           <footer className="mt-10 flex flex-col gap-4 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><Link className="hover:text-primary-foreground" to="/contact">Contact</Link></footer>
         </div>
