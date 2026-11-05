@@ -123,7 +123,7 @@ function SeoContentStrategy() {
             <h1 className="font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">Search visibility <span className="text-brand-orange">that compounds.</span></h1>
             <div className="mt-8 flex flex-col gap-7 md:flex-row md:items-end md:justify-between">
               <p className="max-w-2xl text-base leading-7 text-primary-foreground/72 md:text-lg">Your customers are already searching. ForgeXD helps your business become visible when those searches happen. We combine technical SEO, search strategy, content optimisation and ongoing measurement to build sustainable organic growth around the things your customers actually care about.</p>
-              <a href="mailto:hello@forgexd.co.za?subject=SEO%20%26%20Content%20Strategy" className="flex shrink-0 items-center gap-3 text-sm font-semibold uppercase">Start a project <span className="flex h-10 w-10 items-center justify-center bg-brand-orange"><ArrowDownRight size={18} /></span></a>
+              <Link to="/contact" className="flex shrink-0 items-center gap-3 text-sm font-semibold uppercase">Start a project <span className="flex h-10 w-10 items-center justify-center bg-brand-orange"><ArrowDownRight size={18} /></span></Link>
             </div>
             <div className="mt-10 grid gap-3 border-t border-primary-foreground/20 pt-6 text-xs font-semibold sm:grid-cols-3">
               {["Strategy led", "Data driven", "Focused on real business results"].map(item => <span key={item} className="flex items-center gap-2 text-primary-foreground/70"><Check className="text-brand-orange" size={16} />{item}</span>)}
@@ -207,10 +207,10 @@ function SeoContentStrategy() {
             <p className="mb-5 text-xs font-bold uppercase text-brand-orange">Ready to grow organically</p>
             <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Let's build search visibility for your business.</h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">Tell us what you're looking to achieve and we'll recommend the right approach and solution for your needs.</p>
-            <a href="mailto:hello@forgexd.co.za?subject=SEO%20%26%20Content%20Strategy" className="mt-8 inline-flex items-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold">Start a project <ArrowUpRight size={17} /></a>
+            <Link to="/contact" className="mt-8 inline-flex items-center gap-3 bg-brand-orange px-6 py-4 text-sm font-semibold">Start a project <ArrowUpRight size={17} /></Link>
           </div>
         </div>
-        <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><a href="mailto:hello@forgexd.co.za" className="hover:text-primary-foreground">hello@forgexd.co.za</a></footer>
+        <footer className="relative mx-auto mt-20 flex max-w-[1400px] flex-col gap-4 border-t border-primary-foreground/20 pt-8 text-sm text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 ForgeXD</span><Link to="/contact" className="hover:text-primary-foreground">Contact</Link></footer>
       </section>
     </main>
   );
