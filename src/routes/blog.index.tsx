@@ -30,7 +30,7 @@ function BlogIndex() {
 
   return (
     <main className="overflow-hidden bg-background text-foreground">
-      <section className="relative bg-brand-ink text-primary-foreground">
+      <section className="relative overflow-hidden bg-brand-ink text-primary-foreground">
         <img src={signaturePattern} alt="" aria-hidden className="pointer-events-none absolute -right-28 -top-20 w-[640px] rotate-12 opacity-30" />
         <SiteHeader />
         <div className="relative mx-auto max-w-[1400px] px-5 pb-[8svh] pt-[6svh] md:px-10 lg:px-16">

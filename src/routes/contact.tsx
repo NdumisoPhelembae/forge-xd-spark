@@ -60,7 +60,7 @@ function Contact() {
   return (
     <main className="overflow-hidden bg-background text-foreground">
       {/* Hero */}
-      <section className="relative bg-brand-ink text-primary-foreground">
+      <section className="relative overflow-hidden bg-brand-ink text-primary-foreground">
         <img src={signaturePattern} alt="" aria-hidden="true" className="absolute -right-28 -top-20 h-80 w-80 rotate-12 object-cover opacity-35 md:h-[30rem] md:w-[30rem]" />
 
         <SiteHeader />
