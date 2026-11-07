@@ -47,6 +47,13 @@ const estimateReadTime = (html: string) => {
   return `${minutes} min read`;
 };
 
+const formatExcerpt = (html: string) => {
+  const excerpt = decodeEntities(stripHtml(html));
+  if (excerpt.length <= 220) return excerpt;
+  const boundary = excerpt.lastIndexOf(" ", 220);
+  return `${excerpt.slice(0, boundary > 0 ? boundary : 220).trimEnd()}…`;
+};
+
 const FALLBACK_COVER =
   "https://cms.forgexd.co.za/wp-content/uploads/forgexd-default-cover.jpg";
 
@@ -57,7 +64,7 @@ function mapPost(wp: WpPost): BlogPost {
     id: wp.id,
     slug: wp.slug,
     title: decodeEntities(stripHtml(wp.title.rendered)),
-    excerpt: decodeEntities(stripHtml(wp.excerpt.rendered)).slice(0, 220),
+    excerpt: formatExcerpt(wp.excerpt.rendered),
     category: decodeEntities(category),
     publishedAt: wp.date.slice(0, 10),
     readTime: estimateReadTime(wp.content.rendered),
