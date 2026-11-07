@@ -207,8 +207,7 @@ function About() {
       <section className="relative overflow-hidden bg-brand-ink px-5 py-20 text-primary-foreground md:px-10 md:py-28 lg:px-16">
         <img src={signaturePattern} alt="" aria-hidden="true" loading="lazy" className="absolute -left-24 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 object-cover opacity-40" />
         <div className="signature-cta-overlay absolute inset-0" />
-        <div className="relative mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.65fr_1fr] lg:items-end">
-          <div />
+        <div className="relative mx-auto max-w-[1400px]">
           <div>
             <p className="mb-5 text-xs font-bold uppercase text-brand-orange">Ready to move forward</p>
             <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">Let&rsquo;s build what&rsquo;s next.</h2>

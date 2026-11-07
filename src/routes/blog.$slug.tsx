@@ -66,7 +66,6 @@ function BlogPost() {
       </section>
 
       <article className="mx-auto max-w-3xl px-5 pb-16 pt-28 md:px-0">
-        <p className="text-xl leading-8 text-foreground/80">{post.excerpt}</p>
         {post.takeaways.length > 0 && (
           <aside className="my-12 border-l-2 border-brand-orange bg-accent p-6 md:p-8">
             <p className="mb-4 text-xs font-bold uppercase text-brand-ember">Key takeaways</p>
