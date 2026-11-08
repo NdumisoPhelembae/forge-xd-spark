@@ -26,7 +26,7 @@ function BlogIndex() {
   const posts = Route.useLoaderData();
   const [active, setActive] = useState<string>("All");
   const [featured, ...rest] = posts;
-  const list = active === "All" ? rest : posts.filter((p) => p.category === active);
+  const list = active === "All" ? rest : posts.filter((p) => p.categories.includes(active));
 
   return (
     <main className="overflow-hidden bg-background text-foreground">
@@ -45,7 +45,7 @@ function BlogIndex() {
           <Link to="/blog/$slug" params={{ slug: featured.slug }} className="group mx-auto grid max-w-[1400px] gap-8 border-b border-foreground/20 pb-16 lg:grid-cols-[1.3fr_1fr] lg:items-center">
             <div className="aspect-[16/10] overflow-hidden bg-brand-ink"><img src={featured.coverImage} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
             <div>
-              <p className="text-xs font-bold uppercase text-brand-orange">Featured · {featured.category}</p>
+              <p className="text-xs font-bold uppercase text-brand-orange">Featured · {featured.categories.join(" · ")}</p>
               <h2 className="mt-4 font-display text-3xl font-medium leading-tight md:text-5xl">{featured.title}</h2>
               <p className="mt-5 text-base leading-7 text-muted-foreground">{featured.excerpt}</p>
               <p className="mt-6 flex items-center gap-3 text-sm text-muted-foreground">{formatDate(featured.publishedAt)} · {featured.readTime} <ArrowUpRight className="text-brand-olive transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" size={20} /></p>
@@ -68,7 +68,7 @@ function BlogIndex() {
               {list.map((p) => (
                 <Link key={p.id} to="/blog/$slug" params={{ slug: p.slug }} className="group flex flex-col">
                   <div className="aspect-[4/3] overflow-hidden bg-brand-ink"><img src={p.coverImage} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
-                  <p className="mt-6 text-xs font-bold uppercase text-brand-orange">{p.category}</p>
+                  <p className="mt-6 text-xs font-bold uppercase text-brand-orange">{p.categories.join(" · ")}</p>
                   <h3 className="mt-3 font-display text-2xl font-medium leading-snug group-hover:text-brand-ember">{p.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-muted-foreground">{p.excerpt}</p>
                   <p className="mt-5 text-xs text-muted-foreground">{formatDate(p.publishedAt)} · {p.readTime}</p>

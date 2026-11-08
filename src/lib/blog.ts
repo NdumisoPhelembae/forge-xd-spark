@@ -9,7 +9,7 @@ export type BlogPost = {
   slug: string;
   title: string;
   excerpt: string;
-  category: string;
+  categories: string[];
   publishedAt: string;
   readTime: string;
   coverImage: string;
@@ -17,6 +17,18 @@ export type BlogPost = {
   takeaways: string[];
   contentHtml: string;
 };
+
+export type WordPressTerm = { name?: string; taxonomy?: string };
+
+export function getWordPressCategories(termGroups?: WordPressTerm[][]): string[] {
+  const groups = termGroups ?? [];
+  const explicitCategories = groups.flat().filter((term) => term.taxonomy === "category");
+  const categoryTerms = explicitCategories.length > 0 ? explicitCategories : (groups[0] ?? []);
+  const names = categoryTerms
+    .map((term) => term.name?.trim())
+    .filter((name): name is string => Boolean(name));
+  return [...new Set(names)].length > 0 ? [...new Set(names)] : ["Journal"];
+}
 
 export const categories = ["All", "Strategy", "UX & UI", "Web development", "SEO", "Guides"] as const;
 
@@ -39,7 +51,7 @@ export const posts: BlogPost[] = [
     slug: "launching-your-business-online",
     title: "Launching your business online: what actually matters first",
     excerpt: "Before the logo, before the website, there is one decision that shapes everything else. Here is how we help founders get it right.",
-    category: "Strategy",
+    categories: ["Strategy"],
     publishedAt: "2026-09-28",
     readTime: "7 min read",
     coverImage: aboutHero,
@@ -60,7 +72,7 @@ export const posts: BlogPost[] = [
     slug: "ux-is-a-business-decision",
     title: "UX is a business decision, not a design preference",
     excerpt: "Good experience design reduces support costs, lifts conversions and builds trust. Here's how to frame UX in business terms.",
-    category: "UX & UI",
+    categories: ["UX & UI"],
     publishedAt: "2026-09-15",
     readTime: "6 min read",
     coverImage: uxShowcase,
@@ -78,7 +90,7 @@ export const posts: BlogPost[] = [
     slug: "seo-foundations-for-small-businesses",
     title: "SEO foundations every small business should have in place",
     excerpt: "A practical checklist of the technical and content basics that help search engines — and people — find you.",
-    category: "SEO",
+    categories: ["SEO"],
     publishedAt: "2026-08-30",
     readTime: "8 min read",
     coverImage: webShowcase,
@@ -95,7 +107,7 @@ export const posts: BlogPost[] = [
     slug: "design-system-starter-guide",
     title: "A starter guide to design systems for growing teams",
     excerpt: "When your product starts to feel inconsistent, a design system is the fix. Here's how to start without overbuilding.",
-    category: "Guides",
+    categories: ["Guides"],
     publishedAt: "2026-08-12",
     readTime: "9 min read",
     coverImage: philosophy,
