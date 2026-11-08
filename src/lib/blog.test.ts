@@ -12,7 +12,6 @@ describe("getWordPressCategories", () => {
         ],
         [{ name: "Planning", taxonomy: "post_tag" }],
       ]),
-      ]),
       ["Strategy", "UX & UI"],
     );
   });
