@@ -1,9 +1,10 @@
-import { describe, expect, test } from "bun:test";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { getWordPressCategories } from "./blog";
 
 describe("getWordPressCategories", () => {
-  test("keeps every category assigned to a WordPress post", () => {
-    expect(
+  it("keeps every category assigned to a WordPress post", () => {
+    assert.deepEqual(
       getWordPressCategories([
         [
           { name: "Strategy", taxonomy: "category" },
@@ -11,6 +12,8 @@ describe("getWordPressCategories", () => {
         ],
         [{ name: "Planning", taxonomy: "post_tag" }],
       ]),
-    ).toEqual(["Strategy", "UX & UI"]);
+      ]),
+      ["Strategy", "UX & UI"],
+    );
   });
 });
