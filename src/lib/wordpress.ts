@@ -2,12 +2,11 @@
 // Falls back to the local sample posts when WordPress has no real posts yet
 // or the gateway is unreachable, so the blog never renders empty.
 import { createServerFn } from "@tanstack/react-start";
-import { posts as samplePosts, siteAuthor, type BlogPost } from "./blog";
+import { getWordPressCategories, posts as samplePosts, siteAuthor, type BlogPost, type WordPressTerm } from "./blog";
 
 const CMS_URL = "https://cms.forgexd.co.za";
 
 type WpMedia = { source_url?: string };
-type WpTerm = { name?: string };
 type WpAuthor = { name?: string };
 type WpPost = {
   id: number;
@@ -18,7 +17,7 @@ type WpPost = {
   content: { rendered: string };
   _embedded?: {
     "wp:featuredmedia"?: WpMedia[];
-    "wp:term"?: WpTerm[][];
+    "wp:term"?: WordPressTerm[][];
     author?: WpAuthor[];
   };
 };
@@ -58,14 +57,14 @@ const FALLBACK_COVER =
   "https://cms.forgexd.co.za/wp-content/uploads/forgexd-default-cover.jpg";
 
 function mapPost(wp: WpPost): BlogPost {
-  const category = wp._embedded?.["wp:term"]?.[0]?.[0]?.name ?? "Journal";
+  const categories = getWordPressCategories(wp._embedded?.["wp:term"]);
   const cover = wp._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
   return {
     id: wp.id,
     slug: wp.slug,
     title: decodeEntities(stripHtml(wp.title.rendered)),
     excerpt: formatExcerpt(wp.excerpt.rendered),
-    category: decodeEntities(category),
+    categories: categories.map(decodeEntities),
     publishedAt: wp.date.slice(0, 10),
     readTime: estimateReadTime(wp.content.rendered),
     coverImage: cover || FALLBACK_COVER,
