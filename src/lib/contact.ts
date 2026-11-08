@@ -1,6 +1,5 @@
-// ForgeXD contact form — posts enquiries straight into the ForgeXD CRM
-// (FluentCRM) on the WordPress backend. The webhook URL only exists inside
-// this server handler, so it is never shipped to the browser.
+// Contact enquiries require a dedicated FluentCRM webhook. Never send them to
+// the newsletter webhook; that endpoint is reserved for newsletter signups.
 import { createServerFn } from "@tanstack/react-start";
 
 export const sendContactMessage = createServerFn({ method: "POST" })
@@ -22,28 +21,6 @@ export const sendContactMessage = createServerFn({ method: "POST" })
     }
     return { firstName, lastName, email, phone, message };
   })
-  .handler(async ({ data }) => {
-    const response = await fetch(
-      "https://cms.forgexd.co.za/?fluentcrm=1&route=contact&hash=b4a021ef-4062-4a0e-a66c-3873b738e2f3",
-      {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          email: data.email,
-          first_name: data.firstName,
-          last_name: data.lastName,
-          ...(data.phone ? { phone: data.phone } : {}),
-          message: data.message,
-        }),
-      },
-    );
-    if (!response.ok) {
-      console.error(`FluentCRM contact failed [${response.status}]: ${await response.text()}`);
-      throw new Error("The contact service is not responding. Please try again.");
-    }
-    const result = (await response.json().catch(() => null)) as { success?: boolean } | null;
-    if (result && result.success === false) {
-      throw new Error("The contact service rejected the request. Please try again.");
-    }
-    return { ok: true };
+  .handler(async () => {
+    throw new Error("Contact enquiries are temporarily unavailable while the dedicated form connection is set up.");
   });
