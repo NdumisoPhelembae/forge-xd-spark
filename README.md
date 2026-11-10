@@ -2,9 +2,7 @@
 
 The signature background plus the logo for forge xd is attached all brand colors will be derived from the logo.the site should be clean from a design perspective .ForgeXD is web design agency + digital marketing agencty+ux ui services and digital business strategy .
 
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://forge-xd-spark.lovable.app
+**Live app**: https://forgexd.co.za
 
 ## Build with Lovable
 
