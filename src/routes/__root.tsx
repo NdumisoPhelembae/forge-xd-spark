@@ -78,7 +78,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   loader: () => getAnalyticsMeasurementId(),
-  head: ({ loaderData, location }) => ({
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -97,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600&display=swap" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
-      { rel: "canonical", href: `https://forgexd.co.za${location.pathname}` },
+      
     ],
     // Google Analytics on every page, present and future. The measurement ID
     // is loaded from the secret store on the server.
