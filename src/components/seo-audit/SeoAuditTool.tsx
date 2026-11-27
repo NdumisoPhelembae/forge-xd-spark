@@ -36,6 +36,7 @@ import {
   type SocialPreview,
 } from "../../lib/seo-audit";
 import { CATEGORIES } from "./categories";
+import { EmbedSnippet } from "./EmbedSnippet";
 
 // The free on-page SEO audit: input form, settings and results. Used on the
 // tool page and inside the embeddable widget (embedded = true).
@@ -506,6 +507,13 @@ export function SeoAuditTool({ embedded = false }: { embedded?: boolean }) {
           )}
         </div>
       </div>
+
+      {/* Embed */}
+      {!embedded && (
+        <div className="mx-auto mt-6 max-w-[1400px]">
+          <EmbedSnippet />
+        </div>
+      )}
 
       {/* Results */}
       <div ref={resultsRef} className="mx-auto max-w-[1400px] scroll-mt-8">

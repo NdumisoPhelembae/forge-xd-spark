@@ -12,7 +12,6 @@ import formShot from "../assets/seo-audit-tool-form.webp";
 import resultsShot from "../assets/seo-audit-tool-results.webp";
 import { SiteHeader } from "../components/SiteHeader";
 import { CATEGORIES } from "../components/seo-audit/categories";
-import { EmbedSnippet } from "../components/seo-audit/EmbedSnippet";
 import { SeoAuditTool } from "../components/seo-audit/SeoAuditTool";
 import {
   absoluteUrl,
@@ -510,30 +509,6 @@ function FreeSeoAuditPage() {
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Embed */}
-      <section className="border-y border-primary-foreground/15 bg-brand-ink px-5 py-20 text-primary-foreground md:px-10 md:py-28 lg:px-16">
-        <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-          <div>
-            <p className="mb-4 text-xs font-bold uppercase text-brand-orange">For your website</p>
-            <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">
-              Add this free SEO audit tool to your website
-            </h2>
-            <div className="mt-6 space-y-4 text-lg leading-8 text-primary-foreground/75">
-              <p>
-                Give your readers the same free on-page SEO audit on your own pages. Paste the code
-                where you want the tool to appear, and it loads in a frame that resizes itself.
-              </p>
-              <p>
-                It works in WordPress (use a Custom HTML block), Webflow, Wix, Squarespace and any
-                site that accepts HTML. Your visitors never need an account, and we never see what
-                they check beyond the usual rate limits.
-              </p>
-            </div>
-          </div>
-          <EmbedSnippet />
         </div>
       </section>
 
