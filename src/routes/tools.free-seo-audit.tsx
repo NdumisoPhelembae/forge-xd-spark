@@ -23,7 +23,9 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
-import signatureBackground from "../assets/forgexd-signature-background.webp";
+// Mirrored copy of the home hero background: its full pattern sits bottom left,
+// clear of the CTA text on the right.
+import signatureBackground from "../assets/forgexd-signature-background-mirrored.webp";
 import { SiteHeader } from "../components/SiteHeader";
 import { fetchPageForAudit } from "../lib/page-fetch";
 import {
@@ -1023,9 +1025,10 @@ function FreeSeoAuditPage() {
           alt=""
           aria-hidden="true"
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover opacity-75"
+          className="absolute inset-0 h-full w-full object-cover object-left-bottom opacity-75"
         />
         <div className="signature-cta-overlay absolute inset-0" />
+        <div className="absolute inset-0 bg-brand-ink/60 lg:hidden" />
         <div className="relative mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.65fr_1fr] lg:items-end">
           <div />
           <div>
