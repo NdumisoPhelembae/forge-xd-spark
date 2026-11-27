@@ -275,6 +275,53 @@ function normalizedPhrase(value: string) {
     .trim();
 }
 
+// Small words that do not carry the topic. Matching ignores them, as Yoast does,
+// so "SEO audit for small business" matches "small business SEO audit".
+const FUNCTION_WORDS = new Set([
+  "a",
+  "an",
+  "the",
+  "of",
+  "for",
+  "to",
+  "in",
+  "on",
+  "and",
+  "or",
+  "with",
+  "by",
+  "at",
+  "from",
+  "is",
+  "are",
+  "be",
+  "how",
+  "what",
+  "your",
+  "you",
+  "my",
+  "our",
+  "it",
+  "its",
+  "as",
+  "do",
+  "does",
+]);
+
+function contentWords(value: string) {
+  return normalizedPhrase(value)
+    .split(" ")
+    .filter((word) => word && !FUNCTION_WORDS.has(word));
+}
+
+// Share of the keyphrase's content words that appear in the text, 0 to 1.
+function keyphraseCoverage(text: string, phrase: string) {
+  const words = contentWords(phrase);
+  if (!words.length) return 0;
+  const present = new Set(normalizedPhrase(text).split(" "));
+  return words.filter((word) => present.has(word)).length / words.length;
+}
+
 function splitSentences(text: string) {
   const units: string[] = [];
   const blocks = text.replace(/\r\n?/g, "\n").split(/\n\s*\n+/);
@@ -514,7 +561,11 @@ export function analyzeContent(input: AuditInput): AuditResult {
         .split(/\n\s*\n/)
         .map((item) => item.trim())
         .filter(Boolean);
-  const firstParagraph = paragraphs[0] ?? text.slice(0, 240);
+  // Skip short labels (eyebrows, bylines, category tags) when finding the opening.
+  const firstParagraph =
+    paragraphs.find((paragraph) => wordCount(paragraph) >= 8) ??
+    paragraphs[0] ??
+    text.slice(0, 240);
   const headings = html
     ? Array.from(parsed?.root.querySelectorAll("h2, h3, h4, h5, h6") ?? [])
         .map((el) => el.textContent?.trim() ?? "")
@@ -533,7 +584,7 @@ export function analyzeContent(input: AuditInput): AuditResult {
   const density = words ? (occurrences * 100) / words : 0;
   const phraseRE = new RegExp(escapeRegExp(normalizedPhrase(phrase)).replace(/\s+/g, "\\s+"), "i");
 
-  const firstStatus = phraseRE.test(normalizedPhrase(firstParagraph)) ? "pass" : "fail";
+  const firstStatus = keyphraseCoverage(firstParagraph, phrase) === 1 ? "pass" : "fail";
   addCheck(
     checks,
     "keyphrase-first",
@@ -601,7 +652,7 @@ export function analyzeContent(input: AuditInput): AuditResult {
 
   if (input.metaDescription.trim()) {
     const description = input.metaDescription.trim();
-    const hasPhrase = phraseRE.test(normalizedPhrase(description));
+    const hasPhrase = keyphraseCoverage(description, phrase) === 1;
     addCheck(
       checks,
       "meta-phrase",
@@ -667,16 +718,18 @@ export function analyzeContent(input: AuditInput): AuditResult {
     const slug = normalizedPhrase(
       input.slug.replace(/^https?:\/\/[^/]+\//, "").split("?")[0] ?? input.slug,
     );
-    const slugHasPhrase = phraseRE.test(slug);
+    const slugCoverage = keyphraseCoverage(slug, phrase);
     addCheck(
       checks,
       "slug-phrase",
       "Keyphrase",
       "Keyphrase in URL slug",
-      slugHasPhrase ? "pass" : "fail",
-      slugHasPhrase
+      slugCoverage === 1 ? "pass" : slugCoverage >= 0.5 ? "warning" : "fail",
+      slugCoverage === 1
         ? `The slug contains “${phrase}”.`
-        : `Add a short, hyphenated version of “${phrase}” to the URL slug.`,
+        : slugCoverage >= 0.5
+          ? `The slug contains some of “${phrase}”. A slug with every main word of the keyphrase is stronger.`
+          : `Add a short, hyphenated version of “${phrase}” to the URL slug.`,
       6,
     );
   } else {
@@ -736,8 +789,9 @@ export function analyzeContent(input: AuditInput): AuditResult {
   }
 
   if (headings.length) {
-    const headingMatches = headings.filter((heading) =>
-      phraseRE.test(normalizedPhrase(heading)),
+    // A subheading counts when it holds at least half of the keyphrase's main words.
+    const headingMatches = headings.filter(
+      (heading) => keyphraseCoverage(heading, phrase) >= 0.5,
     ).length;
     const headingRate = (headingMatches / headings.length) * 100;
     const headingStatus = statusForRange(headingRate, 30, 75, 10);
@@ -964,7 +1018,9 @@ export function analyzeContent(input: AuditInput): AuditResult {
     20,
   );
 
-  const financial = FINANCIAL_TERMS.test(text);
+  // A passing mention of forex or investing does not make a page financial
+  // content; three or more mentions do.
+  const financial = (text.match(new RegExp(FINANCIAL_TERMS.source, "gi")) ?? []).length >= 3;
   const disclaimer = RISK_TERMS.test(text);
   const riskStatus = financial ? (disclaimer ? "pass" : "fail") : "pass";
   addCheck(
@@ -1086,10 +1142,15 @@ export function analyzeContent(input: AuditInput): AuditResult {
   }
 
   if (html) {
+    // Decorative images hidden from screen readers rightly have empty alt text.
     const images = [
       ...(parsed?.featured ?? []),
       ...Array.from(parsed?.root.querySelectorAll("img") ?? []),
-    ];
+    ].filter(
+      (image) =>
+        image.getAttribute("aria-hidden") !== "true" &&
+        !/^(presentation|none)$/i.test(image.getAttribute("role") ?? ""),
+    );
     addCheck(
       checks,
       "image-count",
@@ -1113,8 +1174,8 @@ export function analyzeContent(input: AuditInput): AuditResult {
         : `All ${images.length} images have alt text.`,
       26,
     );
-    const phraseAlt = images.some((image) =>
-      phraseRE.test(normalizedPhrase(image.getAttribute("alt") ?? "")),
+    const phraseAlt = images.some(
+      (image) => keyphraseCoverage(image.getAttribute("alt") ?? "", phrase) >= 0.5,
     );
     addCheck(
       checks,

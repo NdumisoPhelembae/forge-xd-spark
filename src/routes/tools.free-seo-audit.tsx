@@ -19,7 +19,9 @@ import {
   PenLine,
   RotateCcw,
   ScanSearch,
+  Search as SearchIcon,
   Sparkles,
+  TrendingUp,
 } from "lucide-react";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import { SiteHeader } from "../components/SiteHeader";
@@ -45,9 +47,9 @@ import {
 } from "../lib/site";
 
 const PATH = "/tools/free-seo-audit";
-const TITLE = "Free On Page SEO Audit Tool | ForgeXD";
+const TITLE = "Free On-Page SEO Audit Tool - No Sign Up | ForgeXD";
 const DESCRIPTION =
-  "Check your content before you publish. Paste text, upload a Word or PDF file, or enter a URL and get a scored SEO audit with clear fixes in seconds.";
+  "Use our free on-page SEO audit tool to check any page in seconds. Paste content, upload a file or enter a URL and get a scored audit with clear fixes.";
 
 export const Route = createFileRoute("/tools/free-seo-audit")({
   head: () => ({
@@ -140,8 +142,20 @@ const CONTENT_TYPES: Array<{ value: ContentType; label: string }> = [
 
 const FAQS = [
   {
+    q: "What is an on-page SEO audit?",
+    a: "An on-page SEO audit checks the parts of a page you control directly: the title, meta description, headings, keyphrase placement, readability, links and images. Backlinks and technical factors such as site speed need different tools, because they sit outside the page itself.",
+  },
+  {
     q: "Is the audit really free?",
-    a: "Yes. There is no sign up and no payment. Run as many single page audits as you need.",
+    a: "Yes. The free on-page SEO audit tool needs no sign up, no payment and has no limit on single page audits. Running a page by URL is limited to 20 audits every 10 minutes so the service stays fast for everyone.",
+  },
+  {
+    q: "Can I audit a page that is already live?",
+    a: "Yes. Choose URL and paste the address. The tool fetches the page, follows any redirects, reads its title and meta description, and audits only the article content, not the menus or footer around it.",
+  },
+  {
+    q: "Does it work outside WordPress?",
+    a: "Yes. It reads standard HTML, so it works with any website builder or CMS. Pasted text and uploaded Word, PDF or text files work too.",
   },
   {
     q: "Do you store my content?",
@@ -154,6 +168,142 @@ const FAQS = [
   {
     q: "Does this replace a full SEO audit?",
     a: "It checks one page at a time. A full audit also covers technical health, site structure, backlinks and search data across your whole website.",
+  },
+];
+
+const STEPS = [
+  {
+    title: "Add your content",
+    copy: "Paste text or HTML, upload a Word, PDF or text file, or enter a URL. For a URL, our server fetches the live page, follows any redirects and reads its title and meta description for you.",
+  },
+  {
+    title: "We find the real content",
+    copy: "Menus, footers, sidebars, share buttons and related posts are not part of your article. The tool finds the article body and audits only that, so your word count and link counts stay accurate.",
+  },
+  {
+    title: "Around 30 checks run",
+    copy: "Each check is weighted by how much it affects rankings and readers. Your focus keyphrase and content type decide which targets apply to the page.",
+  },
+  {
+    title: "You get a score and a fix list",
+    copy: "You see a score out of 100, every result grouped by category, and a list of fixes ordered from the most important to the least.",
+  },
+];
+
+const BANDS = [
+  { range: "85 to 100", label: "Great, ready to publish", tone: "bg-brand-olive" },
+  { range: "65 to 84", label: "Good, a few fixes first", tone: "bg-brand-orange" },
+  { range: "40 to 64", label: "Needs real work", tone: "bg-brand-ember" },
+  { range: "0 to 39", label: "Major issues, do not publish yet", tone: "bg-brand-ink" },
+];
+
+const STANDARDS: Array<{ check: string; target: string; why: ReactNode }> = [
+  {
+    check: "SEO title width",
+    target: "400 to 600 pixels",
+    why: (
+      <>
+        Google cuts titles by pixel width, so a title of wide letters gets cut sooner than one of
+        narrow letters. Google explains how it builds{" "}
+        <a
+          href="https://developers.google.com/search/docs/appearance/title-link"
+          target="_blank"
+          rel="noopener"
+          className="text-brand-orange underline underline-offset-2"
+        >
+          title links in search results
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    check: "Meta description",
+    target: "120 to 156 characters, with your keyphrase",
+    why: (
+      <>
+        Shorter descriptions waste space in the results and longer ones get cut. Google also shows
+        how it chooses{" "}
+        <a
+          href="https://developers.google.com/search/docs/appearance/snippet"
+          target="_blank"
+          rel="noopener"
+          className="text-brand-orange underline underline-offset-2"
+        >
+          the snippet under each result
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    check: "Keyphrase in the opening",
+    target: "First paragraph",
+    why: "Readers and search engines both decide what a page is about from its first lines.",
+  },
+  {
+    check: "Keyphrase density",
+    target: "0.5% to 3%",
+    why: "Too low and the topic is unclear. Too high and the page reads like keyword stuffing.",
+  },
+  {
+    check: "Keyphrase in subheadings",
+    target: "30% to 75% of subheadings",
+    why: "Enough to confirm the topic, but not so many that the headings feel forced.",
+  },
+  {
+    check: "Long sentences",
+    target: "No more than 25% over 20 words",
+    why: "Short sentences keep people reading, especially on a phone.",
+  },
+  {
+    check: "Passive voice",
+    target: "10% of sentences or fewer",
+    why: "Active sentences are clearer and quicker to read.",
+  },
+  {
+    check: "Paragraphs and sections",
+    target: "Paragraphs under 150 words, a heading at least every 300 words",
+    why: "Pages that are easy to scan hold attention for longer.",
+  },
+  {
+    check: "Transition words",
+    target: "At least 30% of sentences",
+    why: "They carry the reader from one idea to the next, so the page reads as one argument.",
+  },
+  {
+    check: "Internal links",
+    target: "At least 2",
+    why: "They pass authority to your important pages and keep readers on your site.",
+  },
+  {
+    check: "Images",
+    target: "At least 2, each with alt text",
+    why: "Alt text helps image search and makes the page usable with a screen reader.",
+  },
+  {
+    check: "Word count",
+    target: "Blog post 500+, cornerstone 900+ (best 1,500), product or service page 200+",
+    why: "Each type of page needs enough depth for its purpose, and no more padding than that.",
+  },
+];
+
+const USES = [
+  {
+    title: "Before you publish",
+    copy: "Catch a missing keyphrase, a long section or empty alt text while it is still a two minute fix.",
+  },
+  {
+    title: "Refreshing an old post",
+    copy: "Pages that slip in rankings often have thin sections, outdated titles or no internal links to newer content.",
+  },
+  {
+    title: "A page stuck just off page one",
+    copy: "On-page gaps are usually the quickest thing to fix when a page ranks close to the first page but not on it.",
+  },
+  {
+    title: "Studying a competitor",
+    copy: "Run a competitor's URL to see how their page is built for the keyphrase you both want.",
   },
 ];
 
@@ -365,12 +515,13 @@ function FreeSeoAuditPage() {
           <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">
             Free SEO audit tool
           </p>
-          <h1 className="max-w-4xl font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">
-            Audit your page <span className="text-brand-orange">before you publish.</span>
+          <h1 className="max-w-5xl font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">
+            Free On-Page SEO Audit Tool - No Sign Up
           </h1>
           <p className="mt-8 max-w-2xl text-base leading-7 text-primary-foreground/72 md:text-lg">
-            Paste your content, upload a file or enter a URL. You get a scored on page SEO audit
-            with clear, specific fixes in seconds.
+            This free on-page SEO audit tool checks any page before it goes live. Paste your
+            content, upload a file or enter a URL, and you get a scored audit with clear, specific
+            fixes in seconds.
           </p>
           <div className="mt-10 grid max-w-3xl gap-3 border-t border-primary-foreground/20 pt-6 text-xs font-semibold sm:grid-cols-3">
             {["No sign up, no payment", "Around 30 checks", "Content stays in your browser"].map(
@@ -638,20 +789,249 @@ function FreeSeoAuditPage() {
           <div className="mb-12 max-w-4xl">
             <p className="mb-4 text-xs font-bold uppercase text-brand-orange">What we check</p>
             <h2 className="font-display text-4xl font-medium md:text-6xl">
-              Five areas, <span className="text-brand-orange">one clear score.</span>
+              Five areas, one clear score.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">
-              Every check is weighted by how much it matters for ranking and for readers. Warnings
-              earn half credit, and fields you leave blank never count against you.
+              Our free on-page SEO audit tool groups around 30 checks into five areas. Because each
+              check is weighted by how much it matters for ranking and for readers, the score shows
+              you where to focus first.
             </p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {CATEGORIES.map(({ name, icon: Icon, copy }) => (
               <article key={name} className="border border-primary-foreground/15 p-6">
                 <Icon className="text-brand-orange" size={26} strokeWidth={1.6} />
-                <h3 className="mt-8 font-display text-xl">{name}</h3>
+                <p className="mt-8 font-display text-xl">{name}</p>
                 <p className="mt-3 text-sm leading-6 text-primary-foreground/65">{copy}</p>
               </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="px-5 py-20 md:px-10 md:py-28 lg:px-16">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="max-w-4xl">
+            <p className="mb-4 text-xs font-bold uppercase text-brand-orange">How it works</p>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">
+              How the free <span className="whitespace-nowrap">on-page</span> SEO audit tool works
+            </h2>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground">
+              Every audit follows the same four steps, whether you paste a rough draft or check a
+              page that has been live for years.
+            </p>
+          </div>
+          <ol className="mt-14 grid border-t border-foreground/20 md:grid-cols-4">
+            {STEPS.map((step, index) => (
+              <li
+                key={step.title}
+                className="border-b border-foreground/20 py-7 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0"
+              >
+                <span className="flex h-11 w-11 items-center justify-center bg-brand-orange text-xs font-bold text-primary-foreground">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <p className="mt-8 font-display text-2xl">{step.title}</p>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{step.copy}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Scoring */}
+      <section className="border-t border-foreground/15 px-5 py-20 md:px-10 md:py-28 lg:px-16">
+        <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+          <div>
+            <p className="mb-4 text-xs font-bold uppercase text-brand-orange">Scoring</p>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">
+              How the <span className="whitespace-nowrap">on-page</span> SEO audit score is
+              calculated
+            </h2>
+            <div className="mt-6 space-y-4 text-base leading-7 text-muted-foreground">
+              <p>
+                Not every check matters equally. For example, a missing keyphrase in your title
+                costs more than a few long sentences, so each check carries a weight from 1 to 9.
+              </p>
+              <p>
+                Passing a check earns its full weight. However, a warning earns only half, because
+                you are close but not there yet, and a fail earns nothing.
+              </p>
+              <p>
+                Fields you leave blank show up as notes and never lower your score. As a result, you
+                can run the free on-page SEO audit tool on a first draft before you have even
+                written the meta description.
+              </p>
+            </div>
+          </div>
+          <div className="self-center border-t border-foreground/20">
+            {BANDS.map((band) => (
+              <div
+                key={band.range}
+                className="flex items-center gap-5 border-b border-foreground/20 py-5"
+              >
+                <span className={`h-10 w-2 shrink-0 ${band.tone}`} />
+                <span className="w-28 shrink-0 font-display text-2xl">{band.range}</span>
+                <span className="text-sm text-muted-foreground">{band.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Standards */}
+      <section className="border-y border-primary-foreground/15 bg-brand-ink px-5 py-20 text-primary-foreground md:px-10 md:py-28 lg:px-16">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="mb-12 max-w-4xl">
+            <p className="mb-4 text-xs font-bold uppercase text-brand-orange">The standards</p>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">
+              The standards behind every <span className="whitespace-nowrap">on-page</span> SEO
+              audit check
+            </h2>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">
+              These targets come from how Google displays search results and from the readability
+              standards the leading SEO plugins use. In other words, the free on-page SEO audit tool
+              holds your page to the same bar your SEO plugin does, then explains why each target
+              matters.
+            </p>
+          </div>
+          {(
+            [
+              ["Keyphrase and search appearance checks", STANDARDS.slice(0, 5)],
+              ["Readability, structure and link checks", STANDARDS.slice(5)],
+            ] as const
+          ).map(([heading, rows]) => (
+            <div key={heading} className="mt-12 first:mt-0">
+              <h3 className="font-display text-2xl">{heading}</h3>
+              <div className="mt-6 overflow-x-auto">
+                <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-primary-foreground/25 text-xs uppercase text-primary-foreground/55">
+                      <th scope="col" className="w-1/5 py-4 pr-6 font-semibold">
+                        Check
+                      </th>
+                      <th scope="col" className="w-1/4 py-4 pr-6 font-semibold">
+                        What passes
+                      </th>
+                      <th scope="col" className="py-4 font-semibold">
+                        Why it matters
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((row) => (
+                      <tr
+                        key={row.check}
+                        className="border-b border-primary-foreground/15 align-top"
+                      >
+                        <th scope="row" className="py-5 pr-6 font-display text-base font-medium">
+                          {row.check}
+                        </th>
+                        <td className="py-5 pr-6 text-primary-foreground/85">{row.target}</td>
+                        <td className="py-5 leading-6 text-primary-foreground/65">{row.why}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* When to use it */}
+      <section className="px-5 py-20 md:px-10 md:py-28 lg:px-16">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="mb-12 max-w-4xl">
+            <p className="mb-4 text-xs font-bold uppercase text-brand-orange">When to use it</p>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">
+              When to run an <span className="whitespace-nowrap">on-page</span> SEO audit
+            </h2>
+          </div>
+          <div className="grid border-l border-t border-foreground/20 sm:grid-cols-2 lg:grid-cols-4">
+            {USES.map((use, index) => {
+              const Icon = [PenLine, RotateCcw, TrendingUp, SearchIcon][index] ?? PenLine;
+              return (
+                <article key={use.title} className="border-b border-r border-foreground/20 p-7">
+                  <Icon className="text-brand-olive" size={27} strokeWidth={1.6} />
+                  <h3 className="mt-8 font-display text-xl">{use.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{use.copy}</p>
+                </article>
+              );
+            })}
+          </div>
+          <div className="mt-14 grid gap-6 border-t border-foreground/20 pt-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+            <h3 className="font-display text-2xl md:text-3xl">
+              What an <span className="whitespace-nowrap">on-page</span> SEO audit does not cover
+            </h3>
+            <div className="space-y-4 text-base leading-7 text-muted-foreground">
+              <p>
+                On-page checks are only one part of search performance. Backlinks, site speed, crawl
+                errors and how Google indexes your site all sit outside the page itself, so this
+                free on-page SEO audit tool does not score them.
+              </p>
+              <p>
+                That is why a page can pass every check here and still struggle to rank. If that
+                sounds like your site, our{" "}
+                <Link
+                  to="/services/seo-content-strategy"
+                  className="text-brand-orange underline underline-offset-2"
+                >
+                  SEO and content strategy service
+                </Link>{" "}
+                looks at the whole picture, including Search Console data, technical health and
+                authority.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Built from real results */}
+      <section className="bg-brand-olive px-5 py-20 text-secondary-foreground md:px-10 md:py-24 lg:px-16">
+        <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-20">
+          <div>
+            <p className="mb-4 text-xs font-bold uppercase text-brand-orange">
+              Built from real results
+            </p>
+            <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">
+              Built from the checklist that grew GhostTraders
+            </h2>
+            <div className="mt-6 space-y-4 text-base leading-7 text-secondary-foreground/80">
+              <p>
+                When Google and Facebook blocked forex advertising,{" "}
+                <a
+                  href="https://ghosttraders.co/"
+                  target="_blank"
+                  rel="noopener"
+                  className="underline underline-offset-2"
+                >
+                  GhostTraders
+                </a>{" "}
+                had one way left to grow: search. Every article went through the same on-page
+                checklist before it was published.
+              </p>
+              <p>
+                That checklist is what this free on-page SEO audit tool runs. We turned it into a
+                public tool so you can check your own pages the same way, in seconds, without an
+                account. For the strategy around it, read the guides on the{" "}
+                <Link to="/blog" className="underline underline-offset-2">
+                  ForgeXD blog
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-px bg-secondary-foreground/20 sm:grid-cols-3">
+            {[
+              ["14,500+", "students learning on GhostTraders"],
+              ["13,000+", "organic visits every month"],
+              ["Since 2018", "growing through search alone"],
+            ].map(([value, label]) => (
+              <div key={value} className="bg-brand-olive p-6">
+                <p className="font-display text-3xl">{value}</p>
+                <p className="mt-2 text-sm leading-6 text-secondary-foreground/75">{label}</p>
+              </div>
             ))}
           </div>
         </div>
@@ -663,7 +1043,7 @@ function FreeSeoAuditPage() {
           <div>
             <p className="mb-4 text-xs font-bold uppercase text-brand-orange">Questions</p>
             <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">
-              About the free audit.
+              Questions about the <span className="whitespace-nowrap">on-page</span> SEO audit
             </h2>
           </div>
           <div className="border-t border-foreground/20">

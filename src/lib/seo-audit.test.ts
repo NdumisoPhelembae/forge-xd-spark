@@ -74,6 +74,48 @@ describe("SEO audit rules", () => {
   });
 });
 
+describe("Keyphrase matching", () => {
+  it("matches the opening on the keyphrase's main words in any order", () => {
+    const result = analyzeContent({
+      ...baseInput,
+      content:
+        "Good optimization for search starts with a clear page and a focused topic.\n\nMore text.",
+    });
+    assert.equal(check(result, "keyphrase-first")?.status, "pass");
+  });
+
+  it("skips short labels when finding the opening paragraph", () => {
+    const result = analyzeContent({
+      ...baseInput,
+      content:
+        "Free tools\n\nSearch optimization is easier when every page has one clear topic and goal.",
+    });
+    assert.equal(check(result, "keyphrase-first")?.status, "pass");
+  });
+
+  it("gives partial credit to a slug with some of the keyphrase", () => {
+    const result = analyzeContent({
+      ...baseInput,
+      keyphrase: "free seo audit tool",
+      slug: "free-seo-checker",
+    });
+    assert.equal(check(result, "slug-phrase")?.status, "warning");
+  });
+
+  it("needs three financial mentions before asking for a risk disclaimer", () => {
+    const once = analyzeContent({
+      ...baseInput,
+      content: "We grew a forex education site through search.",
+    });
+    const often = analyzeContent({
+      ...baseInput,
+      content: "Forex trading is risky. Trading forex needs a plan. Forex rewards discipline.",
+    });
+    assert.equal(check(once, "risk-disclaimer")?.status, "pass");
+    assert.equal(check(often, "risk-disclaimer")?.status, "fail");
+  });
+});
+
 describe("Title width", () => {
   it("measures titles in pixels, not characters", () => {
     assert.ok(titlePixelWidth("iiiiiiiiii") < titlePixelWidth("WWWWWWWWWW"));
@@ -184,6 +226,18 @@ describe("Links in pasted HTML", { skip: !hasDom }, () => {
   it("never scores the outbound link count", () => {
     const result = analyzeContent({ ...baseInput, html: true, content: html("") });
     assert.equal(check(result, "outbound-links")?.status, "info");
+  });
+
+  it("ignores decorative images hidden from screen readers", () => {
+    const result = analyzeContent({
+      ...baseInput,
+      html: true,
+      content: html(
+        "<img src='/p.png' alt='' aria-hidden='true'><img src='/q.png' alt='Search optimization chart'>",
+      ),
+    });
+    assert.equal(check(result, "image-alt")?.status, "pass");
+    assert.match(check(result, "image-count")?.message ?? "", /^1 image/);
   });
 
   it("still fails an outbound link that uses the keyphrase as anchor text", () => {
