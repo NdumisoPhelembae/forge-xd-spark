@@ -6,13 +6,14 @@ import { NewsletterSignup } from "../components/NewsletterSignup";
 import { categories, formatDate } from "../lib/blog";
 import { getBlogPosts } from "../lib/wordpress";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
-import { canonicalLink } from "../lib/site";
+import { canonicalLink, socialMeta } from "../lib/site";
 
 export const Route = createFileRoute("/blog/")({
   loader: () => getBlogPosts({}),
   head: () => ({
     links: [canonicalLink("/blog")],
     meta: [
+      ...socialMeta("/blog"),
       { title: "Journal | ForgeXD — Strategy, Design & Growth" },
       {
         name: "description",
@@ -71,7 +72,7 @@ function BlogIndex() {
             <div className="aspect-[16/10] overflow-hidden bg-brand-ink">
               <img
                 src={featured.coverImage}
-                alt=""
+                alt={featured.coverAlt ?? featured.title}
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
@@ -128,7 +129,7 @@ function BlogIndex() {
                   <div className="aspect-[4/3] overflow-hidden bg-brand-ink">
                     <img
                       src={p.coverImage}
-                      alt=""
+                      alt={p.coverAlt ?? p.title}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />

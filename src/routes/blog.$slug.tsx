@@ -4,7 +4,13 @@ import { SiteHeader } from "../components/SiteHeader";
 import { NewsletterSignup } from "../components/NewsletterSignup";
 import { formatDate, siteAuthor } from "../lib/blog";
 import { getBlogPost, getRelatedPosts } from "../lib/wordpress";
-import { canonicalLink } from "../lib/site";
+import {
+  absoluteUrl,
+  blogPostingSchema,
+  breadcrumbSchema,
+  canonicalLink,
+  socialMeta,
+} from "../lib/site";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
@@ -21,8 +27,28 @@ export const Route = createFileRoute("/blog/$slug")({
         meta: [{ title: "Article not found | ForgeXD" }, { name: "robots", content: "noindex" }],
       };
     const { post } = loaderData;
+    const path = `/blog/${params.slug}`;
+    const cover = {
+      url: post.coverImage.startsWith("http") ? post.coverImage : absoluteUrl(post.coverImage),
+      alt: post.coverAlt ?? post.title,
+    };
     return {
       meta: [
+        // Placeholder posts only appear while WordPress is empty; keep them out of search.
+        ...(post.isSample ? [{ name: "robots", content: "noindex, follow" }] : []),
+        ...socialMeta(path, cover),
+        { property: "article:published_time", content: post.publishedAt },
+        ...(post.updatedAt ? [{ property: "article:modified_time", content: post.updatedAt }] : []),
+        ...post.categories.map((c) => ({ property: "article:section", content: c })),
+        { property: "article:author", content: post.author.name },
+        { "script:ld+json": blogPostingSchema(post) },
+        {
+          "script:ld+json": breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Journal", path: "/blog" },
+            { name: post.title, path },
+          ]),
+        },
         { title: `${post.title} | ForgeXD Journal` },
         { name: "description", content: post.excerpt },
         { property: "og:title", content: post.title },
@@ -74,7 +100,12 @@ function BlogPost() {
         </div>
         <div className="mx-auto max-w-5xl px-5 md:px-10">
           <div className="aspect-[16/9] translate-y-16 overflow-hidden">
-            <img src={post.coverImage} alt="" className="h-full w-full object-cover" />
+            <img
+              src={post.coverImage}
+              alt={post.coverAlt ?? post.title}
+              fetchPriority="high"
+              className="h-full w-full object-cover"
+            />
           </div>
         </div>
       </section>
@@ -141,7 +172,7 @@ function BlogPost() {
                 <div className="aspect-[4/3] overflow-hidden bg-brand-ink">
                   <img
                     src={p.coverImage}
-                    alt=""
+                    alt={p.coverAlt ?? p.title}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />

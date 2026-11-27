@@ -1,6 +1,8 @@
 // Live blog data from the ForgeXD WordPress backend (headless CMS).
-// Falls back to the local sample posts when WordPress has no real posts yet
-// or the CMS is unreachable, so the blog never renders empty.
+// Sample posts stand in only while WordPress has no real posts yet. If the CMS
+// cannot be reached, the last good data is served; with nothing to fall back
+// on, the page answers 503 so search engines retry instead of indexing
+// placeholder content or dropping real articles.
 //
 // Requests are kept small and cached on the server:
 // - a single article is fetched by slug, not by downloading every post
@@ -8,6 +10,7 @@
 // - results are cached in memory for a few minutes, so repeat visits do not
 //   hit WordPress at all
 import { createServerFn } from "@tanstack/react-start";
+import { setResponseHeader, setResponseStatus } from "@tanstack/react-start/server";
 import {
   getWordPressCategories,
   posts as samplePosts,
@@ -15,20 +18,22 @@ import {
   type BlogPost,
   type WordPressTerm,
 } from "./blog";
+import { DEFAULT_OG_IMAGE } from "./site";
 
 const CMS_URL = "https://cms.forgexd.co.za";
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const PAGE_SIZE = 100;
 const MAX_PAGES = 20;
 // Only the fields the site uses. Skips heavy extras such as SEO plugin head data.
-const FIELDS = "id,slug,date,title,excerpt,content,_links,_embedded";
+const FIELDS = "id,slug,date,modified_gmt,title,excerpt,content,_links,_embedded";
 
-type WpMedia = { source_url?: string };
+type WpMedia = { source_url?: string; alt_text?: string };
 type WpAuthor = { name?: string };
 type WpPost = {
   id: number;
   slug: string;
   date: string;
+  modified_gmt?: string;
   title: { rendered: string };
   excerpt: { rendered: string };
   content: { rendered: string };
@@ -103,20 +108,25 @@ const formatExcerpt = (html: string) => {
   return `${excerpt.slice(0, boundary > 0 ? boundary : 220).trimEnd()}…`;
 };
 
-const FALLBACK_COVER = "https://cms.forgexd.co.za/wp-content/uploads/forgexd-default-cover.jpg";
+// Shown when a post has no featured image.
+const FALLBACK_COVER = DEFAULT_OG_IMAGE.url;
 
 function mapPost(wp: WpPost): BlogPost {
   const categories = getWordPressCategories(wp._embedded?.["wp:term"]);
-  const cover = wp._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+  const media = wp._embedded?.["wp:featuredmedia"]?.[0];
+  const cover = media?.source_url;
+  const title = decodeEntities(stripHtml(wp.title.rendered));
   return {
     id: wp.id,
     slug: wp.slug,
-    title: decodeEntities(stripHtml(wp.title.rendered)),
+    title,
     excerpt: formatExcerpt(wp.excerpt.rendered),
     categories: categories.map(decodeEntities),
     publishedAt: wp.date.slice(0, 10),
+    updatedAt: wp.modified_gmt ? `${wp.modified_gmt}Z` : undefined,
     readTime: estimateReadTime(wp.content.rendered),
     coverImage: cover || FALLBACK_COVER,
+    coverAlt: (cover && media?.alt_text?.trim()) || (cover ? title : DEFAULT_OG_IMAGE.alt),
     author: { name: siteAuthor.name, role: siteAuthor.role },
     takeaways: [],
     contentHtml: wp.content.rendered,
@@ -130,6 +140,8 @@ const isRealPost = (p: BlogPost) => p.slug !== "hello-world";
 
 type CacheEntry<T> = { at: number; value: Promise<T> };
 const cache = new Map<string, CacheEntry<unknown>>();
+// Last successful result per key, kept with no expiry as an outage fallback.
+const lastGood = new Map<string, unknown>();
 
 // Caches the promise itself, so simultaneous requests share one WordPress call.
 // A failed call is dropped from the cache straight away so the next visit retries.
@@ -138,18 +150,27 @@ function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
   if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.value;
   const value = load();
   cache.set(key, { at: Date.now(), value });
-  value.catch(() => cache.delete(key));
+  value.then(
+    (result) => lastGood.set(key, result),
+    () => cache.delete(key),
+  );
   return value;
 }
 
 // ---------- WordPress requests ----------
 
-class CmsUnavailableError extends Error {}
+export class CmsUnavailableError extends Error {}
 
 async function wpFetch(query: string): Promise<{ posts: WpPost[]; totalPages: number }> {
-  const response = await fetch(`${CMS_URL}/wp-json/wp/v2/posts?${query}`, {
-    headers: { Accept: "application/json" },
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${CMS_URL}/wp-json/wp/v2/posts?${query}`, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(10_000),
+    });
+  } catch (error) {
+    throw new CmsUnavailableError("WordPress could not be reached", { cause: error });
+  }
   if (!response.ok) {
     const body = await response.text().catch(() => "");
     throw new CmsUnavailableError(
@@ -178,15 +199,21 @@ async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
   return post && isRealPost(post) ? post : null;
 }
 
-// All posts for the journal page. Sample posts stand in while WordPress has no
-// real posts yet, or when the CMS cannot be reached.
+// All posts for the journal page. Sample posts stand in only while WordPress
+// is reachable but has no real posts yet.
 async function resolvePosts(): Promise<BlogPost[]> {
   try {
     const live = await cached("posts:all", fetchAllPosts);
     return live.length > 0 ? live : samplePosts;
   } catch (error) {
-    console.error("WordPress fetch error, using sample posts:", error);
-    return samplePosts;
+    const stale = lastGood.get("posts:all") as BlogPost[] | undefined;
+    if (stale) {
+      console.error("WordPress unavailable, serving last good post list:", error);
+      return stale.length > 0 ? stale : samplePosts;
+    }
+    throw error instanceof CmsUnavailableError
+      ? error
+      : new CmsUnavailableError("WordPress post list failed", { cause: error });
   }
 }
 
@@ -202,26 +229,53 @@ async function resolvePost(slug: string): Promise<BlogPost | null> {
     if (live) return live;
     // Not in WordPress. It may be a sample post shown while the blog is empty.
     const posts = await resolvePosts();
-    return posts === samplePosts ? (samplePosts.find((p) => p.slug === slug) ?? null) : null;
+    return posts.find((p) => p.isSample && p.slug === slug) ?? null;
   } catch (error) {
-    console.error(`WordPress fetch error for "${slug}", trying sample posts:`, error);
-    return samplePosts.find((p) => p.slug === slug) ?? null;
+    const stale =
+      (lastGood.get(`post:${slug}`) as BlogPost | null | undefined) ??
+      (lastGood.get("posts:all") as BlogPost[] | undefined)?.find((p) => p.slug === slug);
+    if (stale) {
+      console.error(`WordPress unavailable, serving last good copy of "${slug}":`, error);
+      return stale;
+    }
+    throw error instanceof CmsUnavailableError
+      ? error
+      : new CmsUnavailableError(`WordPress post "${slug}" failed`, { cause: error });
+  }
+}
+
+// Answers 503 with Retry-After while the CMS is down and nothing is cached, so
+// search engines come back later instead of dropping or misindexing pages.
+async function withCmsStatus<T>(run: () => Promise<T>): Promise<T> {
+  try {
+    return await run();
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.error(error, error.cause);
+      setResponseStatus(503);
+      setResponseHeader("Retry-After", "300");
+      throw new Error("The journal is temporarily unavailable. Please try again in a few minutes.");
+    }
+    throw error;
   }
 }
 
 // ---------- server functions ----------
 
-export const getBlogPosts = createServerFn({ method: "GET" }).handler(async () => resolvePosts());
+export const getBlogPosts = createServerFn({ method: "GET" }).handler(async () =>
+  withCmsStatus(resolvePosts),
+);
 
 export const getBlogPost = createServerFn({ method: "GET" })
   .inputValidator((slug: string) => slug)
-  .handler(async ({ data: slug }) => resolvePost(slug));
+  .handler(async ({ data: slug }) => withCmsStatus(() => resolvePost(slug)));
 
 // "Keep reading" cards. Sent without article bodies to keep the page light.
 export const getRelatedPosts = createServerFn({ method: "GET" })
   .inputValidator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
-    const posts = await resolvePosts();
+    // "Keep reading" is optional; an outage here should never break the article.
+    const posts = await resolvePosts().catch(() => [] as BlogPost[]);
     return posts
       .filter((p) => p.slug !== slug)
       .slice(0, 3)

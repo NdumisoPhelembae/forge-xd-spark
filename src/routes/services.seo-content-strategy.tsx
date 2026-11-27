@@ -20,12 +20,20 @@ import {
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/web-design-showcase.jpg";
-import { canonicalLink } from "../lib/site";
+import { canonicalLink, socialMeta, serviceSchema } from "../lib/site";
 
 export const Route = createFileRoute("/services/seo-content-strategy")({
   head: () => ({
     links: [canonicalLink("/services/seo-content-strategy")],
     meta: [
+      ...socialMeta("/services/seo-content-strategy"),
+      {
+        "script:ld+json": serviceSchema(
+          "SEO & Content Strategy",
+          "/services/seo-content-strategy",
+          "Technical SEO, search strategy, content optimisation and ongoing measurement that build sustainable organic growth around what your customers actually search for.",
+        ),
+      },
       { title: "SEO & Content Strategy | ForgeXD" },
       {
         name: "description",

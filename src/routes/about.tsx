@@ -3,12 +3,14 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import heroImage from "../assets/about-hero.jpg";
-import { canonicalLink } from "../lib/site";
+import { canonicalLink, socialMeta, personSchema } from "../lib/site";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     links: [canonicalLink("/about")],
     meta: [
+      ...socialMeta("/about"),
+      { "script:ld+json": { "@context": "https://schema.org", ...personSchema } },
       { title: "About ForgeXD | We Forge What's Next" },
       {
         name: "description",

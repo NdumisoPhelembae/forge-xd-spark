@@ -21,12 +21,20 @@ import {
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/web-design-showcase.jpg";
-import { canonicalLink } from "../lib/site";
+import { canonicalLink, socialMeta, serviceSchema } from "../lib/site";
 
 export const Route = createFileRoute("/services/digital-business-launch-package")({
   head: () => ({
     links: [canonicalLink("/services/digital-business-launch-package")],
     meta: [
+      ...socialMeta("/services/digital-business-launch-package"),
+      {
+        "script:ld+json": serviceSchema(
+          "Digital Business Launch Package",
+          "/services/digital-business-launch-package",
+          "Launch or grow your business online with strategy, brand and UX, a professional website, search foundations and three months of support.",
+        ),
+      },
       { title: "Digital Business Launch Package | ForgeXD" },
       {
         name: "description",

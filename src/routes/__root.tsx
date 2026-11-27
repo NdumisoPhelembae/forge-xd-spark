@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { getAnalyticsMeasurementId } from "../lib/analytics";
+import { DEFAULT_OG_IMAGE, SITE_NAME, organizationSchema, websiteSchema } from "../lib/site";
 
 function NotFoundComponent() {
   return (
@@ -85,6 +86,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "ForgeXD creates digital experiences, brands, campaigns and strategies built for what’s next.",
       },
       { name: "author", content: "ForgeXD" },
+      // Site-wide share defaults. Pages override og:url, and articles override
+      // the image with their own cover.
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:locale", content: "en_ZA" },
+      { property: "og:image", content: DEFAULT_OG_IMAGE.url },
+      { property: "og:image:width", content: String(DEFAULT_OG_IMAGE.width) },
+      { property: "og:image:height", content: String(DEFAULT_OG_IMAGE.height) },
+      { property: "og:image:alt", content: DEFAULT_OG_IMAGE.alt },
+      { name: "twitter:image", content: DEFAULT_OG_IMAGE.url },
+      { name: "twitter:image:alt", content: DEFAULT_OG_IMAGE.alt },
+      { "script:ld+json": organizationSchema },
+      { "script:ld+json": websiteSchema },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

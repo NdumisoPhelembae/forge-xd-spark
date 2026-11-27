@@ -3,12 +3,20 @@ import { ArrowDownRight, ArrowLeft, ArrowUpRight } from "lucide-react";
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/ux-ui-showcase.jpg";
-import { canonicalLink } from "../lib/site";
+import { canonicalLink, socialMeta, serviceSchema } from "../lib/site";
 
 export const Route = createFileRoute("/services/ux-ui-design")({
   head: () => ({
     links: [canonicalLink("/services/ux-ui-design")],
     meta: [
+      ...socialMeta("/services/ux-ui-design"),
+      {
+        "script:ld+json": serviceSchema(
+          "UX & UI Design",
+          "/services/ux-ui-design",
+          "UX & UI design for South African businesses — user research, wireframes, polished interfaces, prototypes and design systems built around real users and business goals.",
+        ),
+      },
       { title: "UX & UI Design | ForgeXD" },
       {
         name: "description",

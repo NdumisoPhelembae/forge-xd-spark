@@ -18,12 +18,20 @@ import {
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/web-design-showcase.jpg";
-import { canonicalLink } from "../lib/site";
+import { canonicalLink, socialMeta, serviceSchema } from "../lib/site";
 
 export const Route = createFileRoute("/services/web-design-development")({
   head: () => ({
     links: [canonicalLink("/services/web-design-development")],
     meta: [
+      ...socialMeta("/services/web-design-development"),
+      {
+        "script:ld+json": serviceSchema(
+          "Web Design & Development",
+          "/services/web-design-development",
+          "Strategy-led web design and development for South African businesses, from focused landing pages to custom digital platforms.",
+        ),
+      },
       { title: "Web Design & Development | ForgeXD" },
       {
         name: "description",

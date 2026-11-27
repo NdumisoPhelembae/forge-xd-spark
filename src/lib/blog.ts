@@ -11,8 +11,14 @@ export type BlogPost = {
   excerpt: string;
   categories: string[];
   publishedAt: string;
+  // Last modified date from WordPress, used for the sitemap and article schema.
+  updatedAt?: string | undefined;
   readTime: string;
   coverImage: string;
+  // Alt text for the cover image. Falls back to the post title.
+  coverAlt?: string;
+  // Placeholder posts shown only while WordPress has no real posts. Never indexed.
+  isSample?: boolean;
   author: { name: string; role: string };
   takeaways: string[];
   contentHtml: string;
@@ -52,7 +58,7 @@ export const siteAuthor = {
     "Ndumiso Khoza is a digital entrepreneur and strategist with experience spanning digital marketing, search engine optimisation, web development and business strategy. He is passionate about the intersection of technology, business and digital experiences, helping organisations understand opportunities, solve problems and build sustainable digital ecosystems.",
 } as const;
 
-export const posts: BlogPost[] = [
+const samplePostData: BlogPost[] = [
   {
     id: 1,
     slug: "launching-your-business-online",
@@ -147,6 +153,8 @@ export const posts: BlogPost[] = [
 <p>Only add a component to the system once it has been used twice. That keeps it lean and honest.</p>`,
   },
 ];
+
+export const posts: BlogPost[] = samplePostData.map((p) => ({ ...p, isSample: true }));
 
 export const getPost = (slug: string) => posts.find((p) => p.slug === slug);
 

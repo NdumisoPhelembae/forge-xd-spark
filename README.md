@@ -20,7 +20,9 @@ The marketing site for ForgeXD, a digital agency offering web design and develop
 | Blog data | `src/lib/wordpress.ts` reads the WordPress REST API, caches results on the server for 5 minutes and falls back to the sample posts in `src/lib/blog.ts` if the CMS is empty or unreachable |
 | Contact form | `src/lib/contact.ts` submits to the Fluent Forms Contact form (ID 4) |
 | Newsletter | `src/lib/newsletter.ts` submits to the Fluent Forms Subscription form (ID 3) |
-| Canonical URLs | `src/lib/site.ts` builds every canonical from `https://forgexd.co.za` |
+| SEO | `src/lib/site.ts` builds canonicals, share tags and JSON-LD (Organization, WebSite, Person, Service, BlogPosting, BreadcrumbList) from `https://forgexd.co.za` |
+| Sitemap | `src/lib/sitemap.ts`, served at `/sitemap.xml` by `src/server.ts`. Static pages plus live WordPress posts, cached 15 minutes. Add new static routes to `STATIC_PAGES` |
+| CMS outages | The last good blog data is served; with none cached, blog pages and the sitemap answer 503 with Retry-After |
 | Analytics | GA4, loaded in `src/routes/__root.tsx`; set `GOOGLE_ANALYTICS_MEASUREMENT_ID` to override the default tag |
 
 All CMS and form requests run on the server, so nothing about the WordPress backend is shipped to the browser.

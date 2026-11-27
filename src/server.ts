@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { sitemapResponse } from "./lib/sitemap";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -46,6 +47,14 @@ function isH3SwallowedErrorBody(body: string): boolean {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    // Dynamic sitemap, built from the static routes plus live WordPress posts.
+    if (new URL(request.url).pathname === "/sitemap.xml") {
+      if (request.method === "GET" || request.method === "HEAD") {
+        return sitemapResponse(request.method);
+      }
+      return new Response(null, { status: 405, headers: { allow: "GET, HEAD" } });
+    }
+
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
