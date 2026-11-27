@@ -8,6 +8,32 @@ type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
 
+const CANONICAL_HOST = "forgexd.co.za";
+
+// Sends http:// and www. requests to https://forgexd.co.za with a permanent
+// redirect, so Google sees one copy of every page. Only acts on what the
+// hosting proxy reports (X-Forwarded-Proto / Host), so it can never loop:
+// with no proxy header, nothing is redirected.
+function canonicalRedirect(request: Request): Response | null {
+  const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "")
+    .split(",")[0]!
+    .trim()
+    .toLowerCase()
+    .replace(/:\d+$/, "");
+  const proto = (request.headers.get("x-forwarded-proto") ?? "")
+    .split(",")[0]!
+    .trim()
+    .toLowerCase();
+  const isWww = host === `www.${CANONICAL_HOST}`;
+  const isPlainHttp = proto === "http" && (host === CANONICAL_HOST || isWww);
+  if (!isWww && !isPlainHttp) return null;
+  const url = new URL(request.url);
+  return new Response(null, {
+    status: 301,
+    headers: { location: `https://${CANONICAL_HOST}${url.pathname}${url.search}` },
+  });
+}
+
 let serverEntryPromise: Promise<ServerEntry> | undefined;
 
 async function getServerEntry(): Promise<ServerEntry> {
@@ -47,6 +73,9 @@ function isH3SwallowedErrorBody(body: string): boolean {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    const redirect = canonicalRedirect(request);
+    if (redirect) return redirect;
+
     // Dynamic sitemap, built from the static routes plus live WordPress posts.
     if (new URL(request.url).pathname === "/sitemap.xml") {
       if (request.method === "GET" || request.method === "HEAD") {
