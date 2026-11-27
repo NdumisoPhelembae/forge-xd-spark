@@ -12,11 +12,13 @@ import dns from "node:dns";
 import http from "node:http";
 import https from "node:https";
 import net from "node:net";
+import type { OgImageCheck } from "./seo-audit";
 
 const MAX_BYTES = 2_000_000;
 const MAX_REDIRECTS = 5;
 const TIMEOUT_MS = 15_000;
-const USER_AGENT = "ForgeXD-SEO-Audit/1.0 (+https://forgexd.co.za/tools/free-seo-audit)";
+const USER_AGENT =
+  "ForgeXD-SEO-Audit/1.0 (+https://forgexd.co.za/tools/free-on-page-seo-audit-tool)";
 
 export type FetchPageResult =
   | {
@@ -24,6 +26,7 @@ export type FetchPageResult =
       html: string;
       url: string;
       redirects: Array<{ from: string; to: string; status: number }>;
+      ogImage?: OgImageCheck | undefined;
     }
   | { ok: false; error: string };
 
@@ -176,9 +179,14 @@ export function validateTarget(raw: string): URL {
   return url;
 }
 
-type RawResponse = { status: number; location?: string; contentType: string; body?: Buffer };
+type RawResponse = {
+  status: number;
+  location?: string | undefined;
+  contentType: string;
+  body?: Buffer;
+};
 
-function requestOnce(url: URL): Promise<RawResponse> {
+function requestOnce(url: URL, headersOnly = false): Promise<RawResponse> {
   return new Promise((resolve, reject) => {
     const client = url.protocol === "https:" ? https : http;
     const req = client.request(
@@ -196,6 +204,10 @@ function requestOnce(url: URL): Promise<RawResponse> {
       (res) => {
         const status = res.statusCode ?? 0;
         const contentType = String(res.headers["content-type"] ?? "");
+        if (headersOnly) {
+          res.destroy();
+          return resolve({ status, location: res.headers.location, contentType });
+        }
         if (status >= 300 && status < 400 && res.headers.location) {
           res.resume();
           return resolve({ status, location: res.headers.location, contentType });
@@ -229,6 +241,49 @@ function decode(body: Buffer, contentType: string) {
   }
 }
 
+// Finds the page's og:image and checks that it loads, following up to 3
+// redirects with the same safety rules as the page itself.
+function findOgImage(html: string, base: string) {
+  const tag =
+    /<meta[^>]+property=["']og:image["'][^>]*>/i.exec(html)?.[0] ??
+    /<meta[^>]+name=["']og:image["'][^>]*>/i.exec(html)?.[0];
+  const content = tag && /content=["']([^"']+)["']/i.exec(tag)?.[1];
+  if (!content) return null;
+  try {
+    return new URL(content.replace(/&amp;/g, "&"), base).href;
+  } catch {
+    return null;
+  }
+}
+
+async function checkImage(src: string): Promise<OgImageCheck> {
+  try {
+    let url = validateTarget(src);
+    for (let hop = 0; hop <= 3; hop++) {
+      const res = await requestOnce(url, true);
+      if (res.status >= 300 && res.status < 400 && res.location) {
+        url = validateTarget(new URL(res.location, url).href);
+        continue;
+      }
+      const isImage = /^image\//i.test(res.contentType);
+      return {
+        url: src,
+        ok: res.status >= 200 && res.status < 300 && isImage,
+        status: res.status,
+        contentType: res.contentType,
+        error: res.status < 300 && !isImage ? "not an image" : undefined,
+      };
+    }
+    return { url: src, ok: false, error: "too many redirects" };
+  } catch (error) {
+    return {
+      url: src,
+      ok: false,
+      error: error instanceof FetchError ? error.message : "could not be loaded",
+    };
+  }
+}
+
 export async function fetchPublicPage(raw: string): Promise<FetchPageResult> {
   try {
     let url = validateTarget(raw);
@@ -251,12 +306,10 @@ export async function fetchPublicPage(raw: string): Promise<FetchPageResult> {
       if (!/(text\/html|application\/xhtml\+xml)/i.test(res.contentType)) {
         throw new FetchError("That address is not an HTML web page.");
       }
-      return {
-        ok: true,
-        html: decode(res.body ?? Buffer.alloc(0), res.contentType),
-        url: url.href,
-        redirects,
-      };
+      const html = decode(res.body ?? Buffer.alloc(0), res.contentType);
+      const ogImageUrl = findOgImage(html, url.href);
+      const ogImage = ogImageUrl ? await checkImage(ogImageUrl) : undefined;
+      return { ok: true, html, url: url.href, redirects, ogImage };
     }
     throw new FetchError("That address redirects too many times.");
   } catch (error) {

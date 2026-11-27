@@ -16,7 +16,7 @@ const STATIC_PAGES: Array<{ path: string; changefreq: string; priority: string }
   { path: "/services/ux-ui-design", changefreq: "monthly", priority: "0.9" },
   { path: "/services/digital-business-launch-package", changefreq: "monthly", priority: "0.9" },
   { path: "/services/seo-content-strategy", changefreq: "monthly", priority: "0.9" },
-  { path: "/tools/free-seo-audit", changefreq: "monthly", priority: "0.8" },
+  { path: "/tools/free-on-page-seo-audit-tool", changefreq: "monthly", priority: "0.8" },
   { path: "/about", changefreq: "monthly", priority: "0.7" },
   { path: "/blog", changefreq: "daily", priority: "0.8" },
   { path: "/contact", changefreq: "yearly", priority: "0.6" },

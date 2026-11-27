@@ -314,3 +314,78 @@ describe("Full page audits", { skip: !hasDom }, () => {
     assert.ok(result.wordCount < 300, String(result.wordCount));
   });
 });
+
+describe("Social sharing, outline and anchors", { skip: !hasDom }, () => {
+  const page = (head: string, body: string) =>
+    `<!doctype html><html><head><title>Search optimization guide</title>
+      <link rel="canonical" href="https://example.com/guide/">${head}</head>
+      <body><main><article><h1>Search optimization guide</h1><div class="entry-content">
+      <p>Search optimization works best when every page has one clear topic for readers.</p>${body}
+      </div></article></main></body></html>`;
+  const run = (head: string, body = "", extra = {}) =>
+    analyzeContent({
+      ...baseInput,
+      html: true,
+      slug: "",
+      pageUrl: "https://example.com/guide/",
+      content: page(head, body),
+      ...extra,
+    });
+
+  it("checks Open Graph and X tags and builds a share preview", () => {
+    const full = run(
+      `<meta property="og:title" content="Search optimization guide"><meta property="og:description" content="A short guide.">
+       <meta property="og:image" content="https://example.com/og.png"><meta property="og:url" content="https://example.com/guide">
+       <meta name="twitter:card" content="summary_large_image">`,
+      "",
+      { ogImageCheck: { url: "https://example.com/og.png", ok: true, status: 200 } },
+    );
+    for (const id of [
+      "og-title",
+      "og-description",
+      "og-image",
+      "og-image-loads",
+      "og-url",
+      "twitter-card",
+    ]) {
+      assert.equal(check(full, id)?.status, "pass", id);
+    }
+    assert.equal(full.social?.image, "https://example.com/og.png");
+
+    const bare = run("");
+    assert.equal(check(bare, "og-title")?.status, "fail");
+    assert.equal(check(bare, "og-image")?.status, "fail");
+    assert.equal(check(bare, "twitter-card")?.status, "warning");
+  });
+
+  it("fails a share image that does not load", () => {
+    const result = run(`<meta property="og:image" content="https://example.com/missing.png">`, "", {
+      ogImageCheck: { url: "https://example.com/missing.png", ok: false, status: 404 },
+    });
+    assert.equal(check(result, "og-image-loads")?.status, "fail");
+  });
+
+  it("flags vague anchor text", () => {
+    const result = run(
+      "",
+      "<p>Read the guide <a href='/a/'>click here</a> or <a href='/b/'>our keyword research guide</a>.</p>",
+    );
+    assert.equal(check(result, "generic-anchors")?.status, "warning");
+    assert.match(check(result, "generic-anchors")?.message ?? "", /“click here”/);
+  });
+
+  it("returns the heading outline with skipped levels marked", () => {
+    const result = run(
+      "",
+      "<h2>First</h2><p>Text here for this part.</p><h4>Deep</h4><p>More text.</p>",
+    );
+    assert.deepEqual(
+      result.outline.map((item) => [item.level, item.skipped]),
+      [
+        [1, false],
+        [2, false],
+        [4, true],
+      ],
+    );
+  });
+});

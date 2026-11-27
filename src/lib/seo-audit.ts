@@ -2,7 +2,7 @@
 // blank optional fields, plain text without markup, and informational counts.
 export type AuditStatus = "pass" | "warning" | "fail" | "info";
 export type AuditCategory =
-  "Keyphrase" | "Readability" | "Structure" | "Content Quality" | "Images";
+  "Keyphrase" | "Readability" | "Structure" | "Content Quality" | "Images" | "Social Sharing";
 export type ContentType = "standard" | "cornerstone" | "product";
 
 export type AuditCheck = {
@@ -25,6 +25,28 @@ export type AuditInput = {
   slug: string;
   html: boolean;
   pageUrl?: string | undefined;
+  // Result of the server loading the page's og:image (URL audits only).
+  ogImageCheck?: OgImageCheck | undefined;
+};
+
+export type OgImageCheck = {
+  url: string;
+  ok: boolean;
+  status?: number | undefined;
+  contentType?: string | undefined;
+  error?: string | undefined;
+};
+
+export type HeadingOutlineItem = { level: number; text: string; skipped: boolean };
+
+// What a page shows when it is shared, for the preview cards.
+export type SocialPreview = {
+  title: string;
+  description: string;
+  image: string;
+  url: string;
+  siteName: string;
+  twitterCard: string;
 };
 
 export type AuditResult = {
@@ -33,6 +55,8 @@ export type AuditResult = {
   summary: { pass: number; warning: number; fail: number; info: number };
   checks: AuditCheck[];
   wordCount: number;
+  outline: HeadingOutlineItem[];
+  social: SocialPreview | null;
 };
 
 const MIN_WORDS: Record<ContentType, number> = {
@@ -160,6 +184,14 @@ const WEIGHTS: Record<string, number> = {
   "section-length": 4,
   "word-count": 7,
   "heading-order": 4,
+  "h1-length": 2,
+  "generic-anchors": 3,
+  "og-title": 3,
+  "og-description": 3,
+  "og-image": 4,
+  "og-image-loads": 4,
+  "og-url": 2,
+  "twitter-card": 2,
   "dash-punctuation": 2,
   "robotic-phrases": 2,
   "risk-disclaimer": 6,
@@ -420,6 +452,27 @@ const BOILERPLATE = [
   "[class*='cookie']",
   ".sharedaddy",
 ].join(", ");
+
+const GENERIC_ANCHORS = new Set([
+  "",
+  "click here",
+  "click",
+  "here",
+  "read more",
+  "more",
+  "learn more",
+  "find out more",
+  "see more",
+  "continue reading",
+  "this",
+  "this link",
+  "link",
+  "this page",
+  "this article",
+  "this post",
+  "go",
+  "website",
+]);
 
 const FEATURED_IMAGE =
   ".featured-image img, .post-thumbnail img, img.wp-post-image, .page-header-image-single img";
@@ -979,6 +1032,20 @@ export function analyzeContent(input: AuditInput): AuditResult {
         : "The heading outline does not skip levels.",
       18,
     );
+    const h1Text = pageH1?.textContent?.replace(/\s+/g, " ").trim() ?? "";
+    if (h1Text) {
+      addCheck(
+        checks,
+        "h1-length",
+        "Structure",
+        "H1 length",
+        h1Text.length <= 70 ? "pass" : "warning",
+        h1Text.length <= 70
+          ? `Your H1 is ${h1Text.length} characters, short enough to read at a glance.`
+          : `Your H1 is ${h1Text.length} characters. Keep it under 70 so the main point lands at a glance.`,
+        18,
+      );
+    }
   } else {
     addCheck(
       checks,
@@ -1123,6 +1190,28 @@ export function analyzeContent(input: AuditInput): AuditResult {
         : "No outbound link uses the focus keyphrase as its anchor text.",
       24,
     );
+    // Anchor text should say where a link goes. Image links use their alt text.
+    const anchorText = (link: Element) =>
+      (link.textContent?.trim() || link.querySelector("img")?.getAttribute("alt")?.trim() || "")
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N} ]+/gu, "")
+        .trim();
+    const generic = links.filter((link) => GENERIC_ANCHORS.has(anchorText(link)));
+    const examples = [...new Set(generic.map((link) => anchorText(link) || "(no text)"))].slice(
+      0,
+      3,
+    );
+    addCheck(
+      checks,
+      "generic-anchors",
+      "Content Quality",
+      "Descriptive anchor text",
+      generic.length ? "warning" : "pass",
+      generic.length
+        ? `${generic.length} ${generic.length === 1 ? "link uses" : "links use"} vague anchor text (${examples.map((item) => `“${item}”`).join(", ")}). Say where each link goes instead.`
+        : "Every link in the content uses descriptive anchor text.",
+      24,
+    );
   } else {
     for (const [id, title, priority] of [
       ["internal-links", "Internal links", 22],
@@ -1206,6 +1295,124 @@ export function analyzeContent(input: AuditInput): AuditResult {
     );
   }
 
+  // Social sharing tags, for full pages only (fetched URLs or pasted full HTML).
+  let social: SocialPreview | null = null;
+  if (parsed?.fullPage) {
+    const doc = parsed.document;
+    const meta = (key: string) =>
+      doc
+        .querySelector(`meta[property="${key}" i], meta[name="${key}" i]`)
+        ?.getAttribute("content")
+        ?.trim() ?? "";
+    const ogTitle = meta("og:title");
+    const ogDescription = meta("og:description");
+    const ogImage = meta("og:image");
+    const ogUrl = meta("og:url");
+    const twitterCard = meta("twitter:card");
+    social = {
+      title:
+        meta("twitter:title") || ogTitle || doc.querySelector("title")?.textContent?.trim() || "",
+      description: ogDescription || meta("twitter:description") || meta("description"),
+      image: meta("twitter:image") || ogImage,
+      url: ogUrl || pageUrl,
+      siteName: meta("og:site_name") || hostOf(ogUrl || pageUrl),
+      twitterCard,
+    };
+    addCheck(
+      checks,
+      "og-title",
+      "Social Sharing",
+      "Open Graph title",
+      !ogTitle ? "fail" : ogTitle.length > 95 ? "warning" : "pass",
+      !ogTitle
+        ? "No og:title tag. Facebook, LinkedIn and WhatsApp may show the wrong title when this page is shared."
+        : ogTitle.length > 95
+          ? `og:title is ${ogTitle.length} characters and will be cut when shared. Keep it under 95.`
+          : `og:title is set (${ogTitle.length} characters).`,
+      30,
+    );
+    addCheck(
+      checks,
+      "og-description",
+      "Social Sharing",
+      "Open Graph description",
+      !ogDescription ? "warning" : ogDescription.length > 200 ? "warning" : "pass",
+      !ogDescription
+        ? "No og:description tag. Platforms will guess a summary from the page instead."
+        : ogDescription.length > 200
+          ? `og:description is ${ogDescription.length} characters and will be cut. Keep it under 200.`
+          : `og:description is set (${ogDescription.length} characters).`,
+      31,
+    );
+    addCheck(
+      checks,
+      "og-image",
+      "Social Sharing",
+      "Open Graph image",
+      ogImage ? "pass" : "fail",
+      ogImage
+        ? "og:image is set, so shared links show a picture."
+        : "No og:image tag. Shared links will show without a picture, which gets far fewer clicks.",
+      32,
+    );
+    if (ogImage) {
+      const loaded = input.ogImageCheck;
+      addCheck(
+        checks,
+        "og-image-loads",
+        "Social Sharing",
+        "Share image loads",
+        !loaded ? "info" : loaded.ok ? "pass" : "fail",
+        !loaded
+          ? "Enter the page URL to check that the share image actually loads."
+          : loaded.ok
+            ? "The share image loads correctly."
+            : `The share image does not load${loaded.status ? ` (HTTP ${loaded.status})` : loaded.error ? ` (${loaded.error})` : ""}. Shared links will show a blank space.`,
+        33,
+      );
+    }
+    const sameUrl = (a: string, b: string) =>
+      !!a && !!b && a.replace(/\/+$/, "").toLowerCase() === b.replace(/\/+$/, "").toLowerCase();
+    const expectedUrl = canonical || input.pageUrl || "";
+    addCheck(
+      checks,
+      "og-url",
+      "Social Sharing",
+      "Open Graph URL",
+      !ogUrl ? "warning" : !expectedUrl || sameUrl(ogUrl, expectedUrl) ? "pass" : "warning",
+      !ogUrl
+        ? "No og:url tag. Shares of this page may be counted against different addresses."
+        : !expectedUrl || sameUrl(ogUrl, expectedUrl)
+          ? "og:url matches the page address."
+          : `og:url (${ogUrl}) does not match the page address (${expectedUrl}).`,
+      34,
+    );
+    addCheck(
+      checks,
+      "twitter-card",
+      "Social Sharing",
+      "X (Twitter) card",
+      twitterCard ? "pass" : "warning",
+      twitterCard
+        ? `twitter:card is set to “${twitterCard}”.`
+        : "No twitter:card tag. X will show a small summary card; add summary_large_image for a full width image.",
+      35,
+    );
+  }
+
+  // Heading outline for the results panel.
+  const outline: HeadingOutlineItem[] = [];
+  let lastLevel = 0;
+  for (const heading of allHeadings) {
+    const level = Number(heading.tagName.slice(1));
+    outline.push({
+      level,
+      text: (heading.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 140),
+      skipped: lastLevel > 0 && level > lastLevel + 1,
+    });
+    lastLevel = level;
+  }
+
   const count = (status: AuditStatus) => checks.filter((check) => check.status === status).length;
   const summary = {
     pass: count("pass"),
@@ -1215,7 +1422,7 @@ export function analyzeContent(input: AuditInput): AuditResult {
   };
   const score = scoreChecks(checks);
   const band = bandFor(score);
-  return { score, band, summary, checks, wordCount: words };
+  return { score, band, summary, checks, wordCount: words, outline, social };
 }
 
 export const contentMinimums = MIN_WORDS;

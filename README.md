@@ -18,7 +18,7 @@ The marketing site for ForgeXD, a digital agency offering web design and develop
 | --- | --- |
 | Pages | `src/routes` (one file per route) |
 | Blog data | `src/lib/wordpress.ts` reads the WordPress REST API, caches results on the server for 5 minutes and falls back to the sample posts in `src/lib/blog.ts` if the CMS is empty or unreachable |
-| Free SEO audit | `/tools/free-seo-audit`. Scoring engine in `src/lib/seo-audit.ts` (runs in the browser, tested in `seo-audit.test.ts`); URL fetching in `src/lib/page-fetch.server.ts` (public addresses only, redirects re-checked, 2 MB cap, 20 fetches per IP per 10 minutes) |
+| Free SEO audit | `/tools/free-on-page-seo-audit-tool`. Scoring engine in `src/lib/seo-audit.ts` (runs in the browser, tested in `seo-audit.test.ts`); URL fetching in `src/lib/page-fetch.server.ts` (public addresses only, redirects re-checked, 2 MB cap, 20 fetches per IP per 10 minutes) |
 | Contact form | `src/lib/contact.ts` submits to the Fluent Forms Contact form (ID 4) |
 | Newsletter | `src/lib/newsletter.ts` submits to the Fluent Forms Subscription form (ID 3) |
 | SEO | `src/lib/site.ts` builds canonicals, share tags and JSON-LD (Organization, WebSite, Person, Service, BlogPosting, BreadcrumbList) from `https://forgexd.co.za` |

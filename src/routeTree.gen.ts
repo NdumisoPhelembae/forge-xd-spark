@@ -16,7 +16,8 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ServicesDigitalBusinessLaunchPackageRouteImport } from './routes/services.digital-business-launch-package'
 import { Route as ServicesSeoContentStrategyRouteImport } from './routes/services.seo-content-strategy'
-import { Route as ToolsFreeSeoAuditRouteImport } from './routes/tools.free-seo-audit'
+import { Route as ToolsFreeOnPageSeoAuditToolRouteImport } from './routes/tools.free-on-page-seo-audit-tool'
+import { Route as EmbedSeoAuditRouteImport } from './routes/embed.seo-audit'
 import { Route as ServicesUxUiDesignRouteImport } from './routes/services.ux-ui-design'
 import { Route as ServicesWebDesignDevelopmentRouteImport } from './routes/services.web-design-development'
 
@@ -57,9 +58,14 @@ const ServicesSeoContentStrategyRoute =
     path: '/services/seo-content-strategy',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ToolsFreeSeoAuditRoute = ToolsFreeSeoAuditRouteImport.update({
-  id: '/tools/free-seo-audit',
-  path: '/tools/free-seo-audit',
+const ToolsFreeOnPageSeoAuditToolRoute = ToolsFreeOnPageSeoAuditToolRouteImport.update({
+  id: '/tools/free-on-page-seo-audit-tool',
+  path: '/tools/free-on-page-seo-audit-tool',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmbedSeoAuditRoute = EmbedSeoAuditRouteImport.update({
+  id: '/embed/seo-audit',
+  path: '/embed/seo-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesUxUiDesignRoute = ServicesUxUiDesignRouteImport.update({
@@ -81,7 +87,8 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
-  '/tools/free-seo-audit': typeof ToolsFreeSeoAuditRoute
+  '/tools/free-on-page-seo-audit-tool': typeof ToolsFreeOnPageSeoAuditToolRoute
+  '/embed/seo-audit': typeof EmbedSeoAuditRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
   '/blog/': typeof BlogIndexRoute
@@ -93,7 +100,8 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
-  '/tools/free-seo-audit': typeof ToolsFreeSeoAuditRoute
+  '/tools/free-on-page-seo-audit-tool': typeof ToolsFreeOnPageSeoAuditToolRoute
+  '/embed/seo-audit': typeof EmbedSeoAuditRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
   '/blog': typeof BlogIndexRoute
@@ -106,7 +114,8 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
-  '/tools/free-seo-audit': typeof ToolsFreeSeoAuditRoute
+  '/tools/free-on-page-seo-audit-tool': typeof ToolsFreeOnPageSeoAuditToolRoute
+  '/embed/seo-audit': typeof EmbedSeoAuditRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
   '/blog/': typeof BlogIndexRoute
@@ -120,7 +129,8 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
-    | '/tools/free-seo-audit'
+    | '/tools/free-on-page-seo-audit-tool'
+    | '/embed/seo-audit'
     | '/services/ux-ui-design'
     | '/services/web-design-development'
     | '/blog/'
@@ -132,7 +142,8 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
-    | '/tools/free-seo-audit'
+    | '/tools/free-on-page-seo-audit-tool'
+    | '/embed/seo-audit'
     | '/services/ux-ui-design'
     | '/services/web-design-development'
     | '/blog'
@@ -144,7 +155,8 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
-    | '/tools/free-seo-audit'
+    | '/tools/free-on-page-seo-audit-tool'
+    | '/embed/seo-audit'
     | '/services/ux-ui-design'
     | '/services/web-design-development'
     | '/blog/'
@@ -157,7 +169,8 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   ServicesDigitalBusinessLaunchPackageRoute: typeof ServicesDigitalBusinessLaunchPackageRoute
   ServicesSeoContentStrategyRoute: typeof ServicesSeoContentStrategyRoute
-  ToolsFreeSeoAuditRoute: typeof ToolsFreeSeoAuditRoute
+  ToolsFreeOnPageSeoAuditToolRoute: typeof ToolsFreeOnPageSeoAuditToolRoute
+  EmbedSeoAuditRoute: typeof EmbedSeoAuditRoute
   ServicesUxUiDesignRoute: typeof ServicesUxUiDesignRoute
   ServicesWebDesignDevelopmentRoute: typeof ServicesWebDesignDevelopmentRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -214,11 +227,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSeoContentStrategyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tools/free-seo-audit': {
-      id: '/tools/free-seo-audit'
-      path: '/tools/free-seo-audit'
-      fullPath: '/tools/free-seo-audit'
-      preLoaderRoute: typeof ToolsFreeSeoAuditRouteImport
+    '/tools/free-on-page-seo-audit-tool': {
+      id: '/tools/free-on-page-seo-audit-tool'
+      path: '/tools/free-on-page-seo-audit-tool'
+      fullPath: '/tools/free-on-page-seo-audit-tool'
+      preLoaderRoute: typeof ToolsFreeOnPageSeoAuditToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/embed/seo-audit': {
+      id: '/embed/seo-audit'
+      path: '/embed/seo-audit'
+      fullPath: '/embed/seo-audit'
+      preLoaderRoute: typeof EmbedSeoAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/ux-ui-design': {
@@ -246,7 +266,8 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesDigitalBusinessLaunchPackageRoute:
     ServicesDigitalBusinessLaunchPackageRoute,
   ServicesSeoContentStrategyRoute: ServicesSeoContentStrategyRoute,
-  ToolsFreeSeoAuditRoute: ToolsFreeSeoAuditRoute,
+  ToolsFreeOnPageSeoAuditToolRoute: ToolsFreeOnPageSeoAuditToolRoute,
+  EmbedSeoAuditRoute: EmbedSeoAuditRoute,
   ServicesUxUiDesignRoute: ServicesUxUiDesignRoute,
   ServicesWebDesignDevelopmentRoute: ServicesWebDesignDevelopmentRoute,
   BlogIndexRoute: BlogIndexRoute,

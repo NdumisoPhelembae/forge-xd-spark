@@ -14,6 +14,11 @@ const CANONICAL_HOST = "forgexd.co.za";
 // redirect, so Google sees one copy of every page. Only acts on what the
 // hosting proxy reports (X-Forwarded-Proto / Host), so it can never loop:
 // with no proxy header, nothing is redirected.
+// Pages that moved. Old addresses answer with a permanent redirect.
+const MOVED_PATHS: Record<string, string> = {
+  "/tools/free-seo-audit": "/tools/free-on-page-seo-audit-tool",
+};
+
 function canonicalRedirect(request: Request): Response | null {
   const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "")
     .split(",")[0]!
@@ -26,11 +31,13 @@ function canonicalRedirect(request: Request): Response | null {
     .toLowerCase();
   const isWww = host === `www.${CANONICAL_HOST}`;
   const isPlainHttp = proto === "http" && (host === CANONICAL_HOST || isWww);
-  if (!isWww && !isPlainHttp) return null;
   const url = new URL(request.url);
+  const moved = MOVED_PATHS[url.pathname.replace(/\/+$/, "") || "/"];
+  if (!isWww && !isPlainHttp && !moved) return null;
+  // One hop: host, protocol and moved path are fixed in the same redirect.
   return new Response(null, {
     status: 301,
-    headers: { location: `https://${CANONICAL_HOST}${url.pathname}${url.search}` },
+    headers: { location: `https://${CANONICAL_HOST}${moved ?? url.pathname}${url.search}` },
   });
 }
 
@@ -86,8 +93,22 @@ export default {
 
     try {
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      const response = await normalizeCatastrophicSsrResponse(
+        await handler.fetch(request, env, ctx),
+      );
+      // The widget page must load inside other sites. frame-ancestors wins over
+      // any X-Frame-Options header the host adds.
+      if (new URL(request.url).pathname.startsWith("/embed/")) {
+        const headers = new Headers(response.headers);
+        headers.delete("x-frame-options");
+        headers.set("content-security-policy", "frame-ancestors *");
+        return new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers,
+        });
+      }
+      return response;
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {
