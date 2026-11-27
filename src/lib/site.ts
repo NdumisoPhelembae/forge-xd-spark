@@ -135,7 +135,7 @@ export function blogPostingSchema(post: BlogPost) {
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     url,
     headline: post.title,
-    description: post.excerpt,
+    description: post.seo?.description ?? post.excerpt,
     image: post.coverImage.startsWith("http") ? post.coverImage : absoluteUrl(post.coverImage),
     datePublished: post.publishedAt,
     dateModified: post.updatedAt ?? post.publishedAt,

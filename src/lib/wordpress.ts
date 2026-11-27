@@ -25,10 +25,21 @@ const CACHE_TTL_MS = 5 * 60 * 1000;
 const PAGE_SIZE = 100;
 const MAX_PAGES = 20;
 // Only the fields the site uses. Skips heavy extras such as SEO plugin head data.
-const FIELDS = "id,slug,date,modified_gmt,title,excerpt,content,_links,_embedded";
+// yoast_head_json carries the SEO title and description set in Yoast on the CMS.
+const FIELDS = "id,slug,date,modified_gmt,title,excerpt,content,yoast_head_json,_links,_embedded";
 
 type WpMedia = { source_url?: string; alt_text?: string };
 type WpAuthor = { name?: string };
+// Only the Yoast fields that are safe to reuse. Its robots (noindex on the CMS),
+// URLs and schema all describe cms.forgexd.co.za and must never be copied.
+type YoastHead = {
+  title?: string;
+  description?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: Array<{ url?: string }>;
+};
+
 type WpPost = {
   id: number;
   slug: string;
@@ -37,6 +48,7 @@ type WpPost = {
   title: { rendered: string };
   excerpt: { rendered: string };
   content: { rendered: string };
+  yoast_head_json?: YoastHead;
   _embedded?: {
     "wp:featuredmedia"?: WpMedia[];
     "wp:term"?: WordPressTerm[][];
@@ -111,7 +123,13 @@ const formatExcerpt = (html: string) => {
 // Shown when a post has no featured image.
 const FALLBACK_COVER = DEFAULT_OG_IMAGE.url;
 
+const clean = (value?: string) => {
+  const text = value ? decodeEntities(stripHtml(value)) : "";
+  return text || undefined;
+};
+
 function mapPost(wp: WpPost): BlogPost {
+  const yoast = wp.yoast_head_json;
   const categories = getWordPressCategories(wp._embedded?.["wp:term"]);
   const media = wp._embedded?.["wp:featuredmedia"]?.[0];
   const cover = media?.source_url;
@@ -126,6 +144,13 @@ function mapPost(wp: WpPost): BlogPost {
     updatedAt: wp.modified_gmt ? `${wp.modified_gmt}Z` : undefined,
     readTime: estimateReadTime(wp.content.rendered),
     coverImage: cover || FALLBACK_COVER,
+    seo: {
+      title: clean(yoast?.title),
+      description: clean(yoast?.description),
+      ogTitle: clean(yoast?.og_title),
+      ogDescription: clean(yoast?.og_description),
+      ogImage: yoast?.og_image?.[0]?.url || undefined,
+    },
     coverAlt: (cover && media?.alt_text?.trim()) || (cover ? title : DEFAULT_OG_IMAGE.alt),
     author: { name: siteAuthor.name, role: siteAuthor.role },
     takeaways: [],

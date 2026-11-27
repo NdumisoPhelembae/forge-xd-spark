@@ -15,6 +15,15 @@ export type BlogPost = {
   updatedAt?: string | undefined;
   readTime: string;
   coverImage: string;
+  // SEO fields set in the Yoast box on the CMS. Each falls back to the post's
+  // own title, excerpt or cover when left empty in WordPress.
+  seo?: {
+    title?: string | undefined;
+    description?: string | undefined;
+    ogTitle?: string | undefined;
+    ogDescription?: string | undefined;
+    ogImage?: string | undefined;
+  };
   // Alt text for the cover image. Falls back to the post title.
   coverAlt?: string;
   // Placeholder posts shown only while WordPress has no real posts. Never indexed.

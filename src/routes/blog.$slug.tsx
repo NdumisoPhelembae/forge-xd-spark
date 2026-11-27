@@ -28,8 +28,13 @@ export const Route = createFileRoute("/blog/$slug")({
       };
     const { post } = loaderData;
     const path = `/blog/${params.slug}`;
+    // Yoast SEO fields from the CMS win when set; otherwise use the post itself.
+    const seo = post.seo ?? {};
+    const title = seo.title ?? `${post.title} | ForgeXD Journal`;
+    const description = seo.description ?? post.excerpt;
+    const imageUrl = seo.ogImage ?? post.coverImage;
     const cover = {
-      url: post.coverImage.startsWith("http") ? post.coverImage : absoluteUrl(post.coverImage),
+      url: imageUrl.startsWith("http") ? imageUrl : absoluteUrl(imageUrl),
       alt: post.coverAlt ?? post.title,
     };
     return {
@@ -49,10 +54,10 @@ export const Route = createFileRoute("/blog/$slug")({
             { name: post.title, path },
           ]),
         },
-        { title: `${post.title} | ForgeXD Journal` },
-        { name: "description", content: post.excerpt },
-        { property: "og:title", content: post.title },
-        { property: "og:description", content: post.excerpt },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: seo.ogTitle ?? post.title },
+        { property: "og:description", content: seo.ogDescription ?? description },
         { property: "og:type", content: "article" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
