@@ -2,9 +2,11 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import signatureBackground from "../assets/forgexd-signature-background.webp";
 import { SiteHeader } from "../components/SiteHeader";
+import { canonicalLink } from "../lib/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [canonicalLink("/")],
     meta: [
       { title: "ForgeXD | Web Design, UX/UI & Digital Strategy" },
       { name: "description", content: "ForgeXD is a digital agency creating websites, UX/UI design, SEO and business strategies for ambitious brands." },

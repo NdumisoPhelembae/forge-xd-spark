@@ -5,9 +5,11 @@ import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import { SiteHeader } from "../components/SiteHeader";
 import { sendContactMessage } from "../lib/contact";
+import { canonicalLink } from "../lib/site";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
+    links: [canonicalLink("/contact")],
     meta: [
       { title: "Contact ForgeXD | Start a Project" },
       {

@@ -20,9 +20,11 @@ import {
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/web-design-showcase.jpg";
+import { canonicalLink } from "../lib/site";
 
 export const Route = createFileRoute("/services/seo-content-strategy")({
   head: () => ({
+    links: [canonicalLink("/services/seo-content-strategy")],
     meta: [
       { title: "SEO & Content Strategy | ForgeXD" },
       {
@@ -39,7 +41,6 @@ export const Route = createFileRoute("/services/seo-content-strategy")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://forge-xd-spark.lovable.app/services/seo-content-strategy" }],
   }),
   component: SeoContentStrategy,
 });

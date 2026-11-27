@@ -21,9 +21,11 @@ import {
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/web-design-showcase.jpg";
+import { canonicalLink } from "../lib/site";
 
 export const Route = createFileRoute("/services/digital-business-launch-package")({
   head: () => ({
+    links: [canonicalLink("/services/digital-business-launch-package")],
     meta: [
       { title: "Digital Business Launch Package | ForgeXD" },
       {

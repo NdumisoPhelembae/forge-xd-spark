@@ -6,10 +6,12 @@ import { NewsletterSignup } from "../components/NewsletterSignup";
 import { categories, formatDate } from "../lib/blog";
 import { getBlogPosts } from "../lib/wordpress";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
+import { canonicalLink } from "../lib/site";
 
 export const Route = createFileRoute("/blog/")({
   loader: () => getBlogPosts({}),
   head: () => ({
+    links: [canonicalLink("/blog")],
     meta: [
       { title: "Journal | ForgeXD — Strategy, Design & Growth" },
       { name: "description", content: "Practical articles, guides and templates on digital strategy, UX/UI design, web development and SEO from the ForgeXD studio." },

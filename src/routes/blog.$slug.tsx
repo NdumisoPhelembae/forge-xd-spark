@@ -5,6 +5,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { NewsletterSignup } from "../components/NewsletterSignup";
 import { formatDate, siteAuthor, type BlogPost } from "../lib/blog";
 import { getBlogPost, getBlogPosts } from "../lib/wordpress";
+import { canonicalLink } from "../lib/site";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!post) throw notFound();
     return { post };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Article not found | ForgeXD" }, { name: "robots", content: "noindex" }] };
     const { post } = loaderData;
     return {
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:type", content: "article" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [canonicalLink(`/blog/${params.slug}`)],
     };
   },
   notFoundComponent: PostNotFound,

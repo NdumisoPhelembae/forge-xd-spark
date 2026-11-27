@@ -1,6 +1,7 @@
-// Contact enquiries require a dedicated FluentCRM webhook. Never send them to
-// the newsletter webhook; that endpoint is reserved for newsletter signups.
+// Contact enquiries go to the dedicated Fluent Forms "Contact" form (ID 4).
+// Never send them to the subscription form; that one is reserved for signups.
 import { createServerFn } from "@tanstack/react-start";
+import { FLUENT_FORMS, submitFluentForm } from "./fluentforms";
 
 export const sendContactMessage = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
@@ -21,6 +22,15 @@ export const sendContactMessage = createServerFn({ method: "POST" })
     }
     return { firstName, lastName, email, phone, message };
   })
-  .handler(async () => {
-    throw new Error("Contact enquiries are temporarily unavailable while the dedicated form connection is set up.");
+  .handler(async ({ data }) => {
+    // The Fluent Form has no phone field, so the optional number rides along
+    // at the end of the message and is never lost.
+    const description = data.phone ? `${data.message}\n\nPhone: ${data.phone}` : data.message;
+    await submitFluentForm(FLUENT_FORMS.contact, {
+      "names[first_name]": data.firstName,
+      "names[last_name]": data.lastName,
+      email: data.email,
+      description,
+    });
+    return { ok: true };
   });

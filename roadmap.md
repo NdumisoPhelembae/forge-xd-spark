@@ -9,5 +9,6 @@
 - [x] Confirm the SEO article's first paragraph is not duplicated or truncated in the article view.
 - [x] Align the About page closing call-to-action with the page content edge.
 - [x] Keep the signature pattern contained within the dark header areas on Blog and Contact.
-- [ ] Point Contact submissions to the dedicated FluentCRM webhook after its URL is provided (waiting for URL).
+- [x] Send Contact submissions to the Fluent Forms Contact form (ID 4) and newsletter signups to the Subscription form (ID 3).
+- [x] Point every page's canonical URL at forgexd.co.za.
 - [x] Keep the journal card excerpt from cutting a word mid-sentence.

@@ -18,9 +18,11 @@ import {
 import logoAsset from "../assets/forgexd-logo-cropped.png";
 import signaturePattern from "../assets/forgexd-signature-pattern.png";
 import showcaseImage from "../assets/web-design-showcase.jpg";
+import { canonicalLink } from "../lib/site";
 
 export const Route = createFileRoute("/services/web-design-development")({
   head: () => ({
+    links: [canonicalLink("/services/web-design-development")],
     meta: [
       { title: "Web Design & Development | ForgeXD" },
       {
