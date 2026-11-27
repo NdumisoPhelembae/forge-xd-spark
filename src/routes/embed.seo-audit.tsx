@@ -8,6 +8,9 @@ const TOOL_PATH = "/tools/free-on-page-seo-audit-tool";
 // The free tool as it runs inside other websites (see public/embed.js).
 // Kept out of search results; the full tool page holds the ranking signals.
 export const Route = createFileRoute("/embed/seo-audit")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    credit: search["credit"] === "host" ? ("host" as const) : undefined,
+  }),
   head: () => ({
     links: [canonicalLink(TOOL_PATH)],
     meta: [
@@ -19,6 +22,7 @@ export const Route = createFileRoute("/embed/seo-audit")({
 });
 
 function EmbeddedSeoAudit() {
+  const { credit } = Route.useSearch();
   // Tell the host page how tall the tool is, so its iframe never scrolls.
   useEffect(() => {
     if (window.parent === window) return;
@@ -39,16 +43,19 @@ function EmbeddedSeoAudit() {
   return (
     <main className="bg-background p-4 text-foreground md:p-6">
       <SeoAuditTool embedded />
-      <p className="mt-6 text-right text-sm text-muted-foreground">
-        <a
-          href={`https://forgexd.co.za${TOOL_PATH}`}
-          target="_blank"
-          rel="noopener"
-          className="underline underline-offset-2 hover:text-brand-orange"
-        >
-          Open the full tool on ForgeXD
-        </a>
-      </p>
+      {credit !== "host" && (
+        <p className="mt-6 text-right text-sm text-muted-foreground">
+          Powered by{" "}
+          <a
+            href={`https://forgexd.co.za${TOOL_PATH}`}
+            target="_blank"
+            rel="noopener"
+            className="font-semibold text-foreground underline underline-offset-2 hover:text-brand-orange"
+          >
+            ForgeXD
+          </a>
+        </p>
+      )}
     </main>
   );
 }

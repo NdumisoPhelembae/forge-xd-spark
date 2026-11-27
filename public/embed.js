@@ -10,7 +10,9 @@
       if (host.getAttribute("data-forgexd-ready")) continue;
       host.setAttribute("data-forgexd-ready", "1");
       var frame = document.createElement("iframe");
-      frame.src = ORIGIN + "/embed/seo-audit?ref=" + encodeURIComponent(location.hostname);
+      var credit = host.querySelector('a[href*="forgexd.co.za"]') ? "&credit=host" : "";
+      frame.src =
+        ORIGIN + "/embed/seo-audit?ref=" + encodeURIComponent(location.hostname) + credit;
       frame.title = "Free on-page SEO audit tool by ForgeXD";
       frame.loading = "lazy";
       frame.setAttribute("allow", "clipboard-write");

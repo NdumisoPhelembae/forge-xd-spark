@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Check, ChevronDown, Code2, Copy } from "lucide-react";
 
-// The copy and paste code for the widget. The link around the ForgeXD icon
-// sits in the host page's own HTML, so search engines see it as a link.
+// The copy and paste code for the widget. The "Powered by ForgeXD" link sits
+// in the host page's own HTML, so search engines see it as a link.
 const EMBED_SNIPPET = `<div data-forgexd-seo-audit>
-  <a href="https://forgexd.co.za/tools/free-on-page-seo-audit-tool" style="display:block;width:max-content;margin:8px 0 0 auto">
-    <img src="https://forgexd.co.za/favicon.png" alt="Free on-page SEO audit tool by ForgeXD" width="32" height="32">
-  </a>
+  <p style="margin:8px 0 0;text-align:right;font-size:13px">Powered by <a href="https://forgexd.co.za/tools/free-on-page-seo-audit-tool">ForgeXD</a></p>
 </div>
 <script src="https://forgexd.co.za/embed.js" async></script>`;
 
