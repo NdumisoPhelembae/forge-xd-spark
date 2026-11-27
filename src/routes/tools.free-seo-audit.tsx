@@ -23,7 +23,7 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
-import signaturePattern from "../assets/forgexd-signature-pattern.png";
+import signatureBackground from "../assets/forgexd-signature-background.webp";
 import { SiteHeader } from "../components/SiteHeader";
 import { fetchPageForAudit } from "../lib/page-fetch";
 import {
@@ -47,6 +47,8 @@ import {
 } from "../lib/site";
 
 const PATH = "/tools/free-seo-audit";
+const HERO_IMAGE =
+  "https://cms.forgexd.co.za/wp-content/uploads/2026/11/Creative-Team-Collaboration-with-Mandala-Graphics.png";
 const TITLE = "Free On-Page SEO Audit Tool - No Sign Up | ForgeXD";
 const DESCRIPTION =
   "Use our free on-page SEO audit tool to check any page in seconds. Paste content, upload a file or enter a URL and get a scored audit with clear fixes.";
@@ -505,11 +507,13 @@ function FreeSeoAuditPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-brand-ink text-primary-foreground">
         <img
-          src={signaturePattern}
-          alt=""
-          aria-hidden="true"
-          className="absolute -right-28 -top-20 h-80 w-80 rotate-12 object-cover opacity-35 md:h-[30rem] md:w-[30rem]"
+          src={HERO_IMAGE}
+          alt="A creative team collaborating on a project surrounded by mandala graphics"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-50"
         />
+        <div className="service-hero-overlay absolute inset-0" />
         <SiteHeader />
         <div className="relative z-10 mx-auto max-w-[1400px] px-5 pb-16 pt-14 md:px-10 md:pb-20 lg:px-16">
           <p className="mb-5 text-xs font-semibold uppercase text-brand-orange">
@@ -518,7 +522,7 @@ function FreeSeoAuditPage() {
           <h1 className="max-w-5xl font-display text-4xl font-medium leading-[1.08] md:text-6xl lg:text-7xl">
             Free On-Page SEO Audit Tool - No Sign Up
           </h1>
-          <p className="mt-8 max-w-2xl text-base leading-7 text-primary-foreground/72 md:text-lg">
+          <p className="mt-8 max-w-2xl text-lg leading-8 text-primary-foreground/72">
             This free on-page SEO audit tool checks any page before it goes live. Paste your
             content, upload a file or enter a URL, and you get a scored audit with clear, specific
             fixes in seconds.
@@ -791,7 +795,7 @@ function FreeSeoAuditPage() {
             <h2 className="font-display text-4xl font-medium md:text-6xl">
               Five areas, one clear score.
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-primary-foreground/65">
               Our free on-page SEO audit tool groups around 30 checks into five areas. Because each
               check is weighted by how much it matters for ranking and for readers, the score shows
               you where to focus first.
@@ -802,7 +806,7 @@ function FreeSeoAuditPage() {
               <article key={name} className="border border-primary-foreground/15 p-6">
                 <Icon className="text-brand-orange" size={26} strokeWidth={1.6} />
                 <p className="mt-8 font-display text-xl">{name}</p>
-                <p className="mt-3 text-sm leading-6 text-primary-foreground/65">{copy}</p>
+                <p className="mt-3 text-lg leading-8 text-primary-foreground/65">{copy}</p>
               </article>
             ))}
           </div>
@@ -817,7 +821,7 @@ function FreeSeoAuditPage() {
             <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">
               How the free <span className="whitespace-nowrap">on-page</span> SEO audit tool works
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
               Every audit follows the same four steps, whether you paste a rough draft or check a
               page that has been live for years.
             </p>
@@ -832,7 +836,7 @@ function FreeSeoAuditPage() {
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <p className="mt-8 font-display text-2xl">{step.title}</p>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{step.copy}</p>
+                <p className="mt-3 text-lg leading-8 text-muted-foreground">{step.copy}</p>
               </li>
             ))}
           </ol>
@@ -848,7 +852,7 @@ function FreeSeoAuditPage() {
               How the <span className="whitespace-nowrap">on-page</span> SEO audit score is
               calculated
             </h2>
-            <div className="mt-6 space-y-4 text-base leading-7 text-muted-foreground">
+            <div className="mt-6 space-y-4 text-lg leading-8 text-muted-foreground">
               <p>
                 Not every check matters equally. For example, a missing keyphrase in your title
                 costs more than a few long sentences, so each check carries a weight from 1 to 9.
@@ -872,7 +876,7 @@ function FreeSeoAuditPage() {
               >
                 <span className={`h-10 w-2 shrink-0 ${band.tone}`} />
                 <span className="w-28 shrink-0 font-display text-2xl">{band.range}</span>
-                <span className="text-sm text-muted-foreground">{band.label}</span>
+                <span className="text-lg text-muted-foreground">{band.label}</span>
               </div>
             ))}
           </div>
@@ -888,7 +892,7 @@ function FreeSeoAuditPage() {
               The standards behind every <span className="whitespace-nowrap">on-page</span> SEO
               audit check
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-primary-foreground/65">
               These targets come from how Google displays search results and from the readability
               standards the leading SEO plugins use. In other words, the free on-page SEO audit tool
               holds your page to the same bar your SEO plugin does, then explains why each target
@@ -904,7 +908,7 @@ function FreeSeoAuditPage() {
             <div key={heading} className="mt-12 first:mt-0">
               <h3 className="font-display text-2xl">{heading}</h3>
               <div className="mt-6 overflow-x-auto">
-                <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+                <table className="w-full min-w-[720px] border-collapse text-left text-lg leading-8">
                   <thead>
                     <tr className="border-b border-primary-foreground/25 text-xs uppercase text-primary-foreground/55">
                       <th scope="col" className="w-1/5 py-4 pr-6 font-semibold">
@@ -924,7 +928,7 @@ function FreeSeoAuditPage() {
                         key={row.check}
                         className="border-b border-primary-foreground/15 align-top"
                       >
-                        <th scope="row" className="py-5 pr-6 font-display text-base font-medium">
+                        <th scope="row" className="py-5 pr-6 font-display text-lg font-medium">
                           {row.check}
                         </th>
                         <td className="py-5 pr-6 text-primary-foreground/85">{row.target}</td>
@@ -955,7 +959,7 @@ function FreeSeoAuditPage() {
                 <article key={use.title} className="border-b border-r border-foreground/20 p-7">
                   <Icon className="text-brand-olive" size={27} strokeWidth={1.6} />
                   <h3 className="mt-8 font-display text-xl">{use.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{use.copy}</p>
+                  <p className="mt-3 text-lg leading-8 text-muted-foreground">{use.copy}</p>
                 </article>
               );
             })}
@@ -964,7 +968,7 @@ function FreeSeoAuditPage() {
             <h3 className="font-display text-2xl md:text-3xl">
               What an <span className="whitespace-nowrap">on-page</span> SEO audit does not cover
             </h3>
-            <div className="space-y-4 text-base leading-7 text-muted-foreground">
+            <div className="space-y-4 text-lg leading-8 text-muted-foreground">
               <p>
                 On-page checks are only one part of search performance. Backlinks, site speed, crawl
                 errors and how Google indexes your site all sit outside the page itself, so this
@@ -987,56 +991,6 @@ function FreeSeoAuditPage() {
         </div>
       </section>
 
-      {/* Built from real results */}
-      <section className="bg-brand-olive px-5 py-20 text-secondary-foreground md:px-10 md:py-24 lg:px-16">
-        <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-20">
-          <div>
-            <p className="mb-4 text-xs font-bold uppercase text-brand-orange">
-              Built from real results
-            </p>
-            <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl">
-              Built from the checklist that grew GhostTraders
-            </h2>
-            <div className="mt-6 space-y-4 text-base leading-7 text-secondary-foreground/80">
-              <p>
-                When Google and Facebook blocked forex advertising,{" "}
-                <a
-                  href="https://ghosttraders.co/"
-                  target="_blank"
-                  rel="noopener"
-                  className="underline underline-offset-2"
-                >
-                  GhostTraders
-                </a>{" "}
-                had one way left to grow: search. Every article went through the same on-page
-                checklist before it was published.
-              </p>
-              <p>
-                That checklist is what this free on-page SEO audit tool runs. We turned it into a
-                public tool so you can check your own pages the same way, in seconds, without an
-                account. For the strategy around it, read the guides on the{" "}
-                <Link to="/blog" className="underline underline-offset-2">
-                  ForgeXD blog
-                </Link>
-                .
-              </p>
-            </div>
-          </div>
-          <div className="grid gap-px bg-secondary-foreground/20 sm:grid-cols-3">
-            {[
-              ["14,500+", "students learning on GhostTraders"],
-              ["13,000+", "organic visits every month"],
-              ["Since 2018", "growing through search alone"],
-            ].map(([value, label]) => (
-              <div key={value} className="bg-brand-olive p-6">
-                <p className="font-display text-3xl">{value}</p>
-                <p className="mt-2 text-sm leading-6 text-secondary-foreground/75">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section className="px-5 py-20 md:px-10 md:py-28 lg:px-16">
         <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
@@ -1055,7 +1009,7 @@ function FreeSeoAuditPage() {
                     +
                   </span>
                 </summary>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">{item.a}</p>
+                <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{item.a}</p>
               </details>
             ))}
           </div>
@@ -1065,11 +1019,11 @@ function FreeSeoAuditPage() {
       {/* CTA */}
       <section className="relative overflow-hidden bg-brand-ink px-5 py-20 text-primary-foreground md:px-10 md:py-28 lg:px-16">
         <img
-          src={signaturePattern}
+          src={signatureBackground}
           alt=""
           aria-hidden="true"
           loading="lazy"
-          className="absolute -left-24 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 object-contain opacity-35"
+          className="absolute inset-0 h-full w-full object-cover opacity-75"
         />
         <div className="signature-cta-overlay absolute inset-0" />
         <div className="relative mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[0.65fr_1fr] lg:items-end">
@@ -1081,7 +1035,7 @@ function FreeSeoAuditPage() {
             <h2 className="font-display text-4xl font-medium leading-tight md:text-6xl">
               Let&rsquo;s grow your whole site&rsquo;s search visibility.
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-primary-foreground/65">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-primary-foreground/65">
               ForgeXD audits technical health, content and search data across your entire website,
               then builds the plan to fix what holds it back.
             </p>
@@ -1234,7 +1188,7 @@ function Results({ result, redirectNote }: { result: AuditResult; redirectNote: 
           {fixes.length ? (
             <ol className="mt-5 space-y-4">
               {fixes.map((item, index) => (
-                <li key={item.id} className="flex gap-4 text-sm leading-6">
+                <li key={item.id} className="flex gap-4 text-lg leading-8">
                   <span
                     className={`flex h-7 w-7 shrink-0 items-center justify-center text-xs font-bold text-primary-foreground ${STATUS[item.status].dot}`}
                   >
@@ -1248,7 +1202,7 @@ function Results({ result, redirectNote }: { result: AuditResult; redirectNote: 
               ))}
             </ol>
           ) : (
-            <p className="mt-5 text-sm leading-6 text-muted-foreground">
+            <p className="mt-5 text-lg leading-8 text-muted-foreground">
               Nothing to fix. This page is ready to publish.
             </p>
           )}
@@ -1264,7 +1218,7 @@ function CheckRow({ check }: { check: AuditCheck }): ReactNode {
   return (
     <li className="flex gap-3 border-t border-foreground/10 py-3 first:border-t-0">
       <Icon size={18} className={`mt-0.5 shrink-0 ${status.text}`} />
-      <span className="text-sm leading-6">
+      <span className="text-lg leading-8">
         <span className="font-semibold">{check.title}</span>
         <span className={`ml-2 text-[11px] font-bold uppercase ${status.text}`}>
           {status.label}
