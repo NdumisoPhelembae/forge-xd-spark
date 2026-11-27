@@ -133,9 +133,9 @@ const STATUS: Record<
 };
 
 const CONTENT_TYPES: Array<{ value: ContentType; label: string }> = [
-  { value: "standard", label: "Standard post (300+ words)" },
-  { value: "cornerstone", label: "Cornerstone content (900+ words)" },
-  { value: "product", label: "Product or service page (500+ words)" },
+  { value: "standard", label: "Standard blog post (500+ words)" },
+  { value: "cornerstone", label: "Cornerstone content (900+ words, best 1,500)" },
+  { value: "product", label: "Product or service page (200+ words)" },
 ];
 
 const FAQS = [

@@ -4,6 +4,7 @@ import {
   analyzeContent,
   bandFor,
   contentMinimums,
+  contentTargets,
   prioritisedFixes,
   scoreChecks,
   titlePixelWidth,
@@ -29,8 +30,22 @@ const check = (result: ReturnType<typeof analyzeContent>, id: string) =>
 const hasDom = typeof DOMParser !== "undefined";
 
 describe("SEO audit rules", () => {
-  it("keeps the agreed minimum word counts", () => {
-    assert.deepEqual(contentMinimums, { standard: 300, cornerstone: 900, product: 500 });
+  it("keeps the agreed minimum and best word counts", () => {
+    assert.deepEqual(contentMinimums, { standard: 500, cornerstone: 900, product: 200 });
+    assert.deepEqual(contentTargets, { standard: 500, cornerstone: 1500, product: 200 });
+  });
+
+  it("warns cornerstone content between 900 and 1,500 words", () => {
+    const words = (n: number) => Array.from({ length: n }, (_, i) => `word${i}`).join(" ");
+    const status = (n: number) =>
+      check(
+        analyzeContent({ ...baseInput, contentType: "cornerstone", content: words(n) }),
+        "word-count",
+      )?.status;
+    assert.equal(status(899), "fail");
+    assert.equal(status(900), "warning");
+    assert.equal(status(1499), "warning");
+    assert.equal(status(1500), "pass");
   });
 
   it("checks the opening paragraph for the keyphrase", () => {

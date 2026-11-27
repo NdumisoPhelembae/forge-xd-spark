@@ -36,9 +36,16 @@ export type AuditResult = {
 };
 
 const MIN_WORDS: Record<ContentType, number> = {
-  standard: 300,
+  standard: 500,
   cornerstone: 900,
-  product: 500,
+  product: 200,
+};
+// Best length per content type. Between the minimum and this target the check
+// is a warning; at or above it, a pass.
+const TARGET_WORDS: Record<ContentType, number> = {
+  standard: 500,
+  cornerstone: 1500,
+  product: 200,
 };
 
 const ROBOTIC_PHRASES = [
@@ -877,21 +884,25 @@ export function analyzeContent(input: AuditInput): AuditResult {
   );
 
   const minimum = MIN_WORDS[input.contentType];
-  const wordStatus =
-    words >= minimum
-      ? words >= minimum * 1.15
-        ? "pass"
-        : "warning"
-      : words >= minimum * 0.85
-        ? "warning"
-        : "fail";
+  const target = TARGET_WORDS[input.contentType];
+  const typeLabel =
+    input.contentType === "standard"
+      ? "Standard blog post"
+      : input.contentType === "cornerstone"
+        ? "Cornerstone content"
+        : "Product or service page";
+  const wordStatus = words >= target ? "pass" : words >= minimum ? "warning" : "fail";
   addCheck(
     checks,
     "word-count",
     "Structure",
     "Content length",
     wordStatus,
-    `${words.toLocaleString()} words. ${input.contentType === "standard" ? "Standard post" : input.contentType === "cornerstone" ? "Cornerstone content" : "Product and service page"} minimum: ${minimum.toLocaleString()} words${words < minimum ? `; add at least ${(minimum - words).toLocaleString()} more.` : "."}`,
+    words < minimum
+      ? `${words.toLocaleString()} words. ${typeLabel} minimum: ${minimum.toLocaleString()} words; add at least ${(minimum - words).toLocaleString()} more.`
+      : words < target
+        ? `${words.toLocaleString()} words. That meets the ${minimum.toLocaleString()} word minimum for ${typeLabel.toLowerCase()}; the best length is ${target.toLocaleString()} words, so add about ${(target - words).toLocaleString()} more.`
+        : `${words.toLocaleString()} words. ${typeLabel} target: ${target.toLocaleString()} words.`,
     17,
   );
 
@@ -1147,6 +1158,7 @@ export function analyzeContent(input: AuditInput): AuditResult {
 }
 
 export const contentMinimums = MIN_WORDS;
+export const contentTargets = TARGET_WORDS;
 
 // Weighted score: a pass earns the check's full weight, a warning half of it,
 // a fail nothing. Info results are left out completely.
