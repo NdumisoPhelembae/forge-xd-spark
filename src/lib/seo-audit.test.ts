@@ -180,3 +180,68 @@ describe("Links in pasted HTML", { skip: !hasDom }, () => {
     assert.equal(check(result, "outbound-anchor")?.status, "fail");
   });
 });
+
+describe("Full page audits", { skip: !hasDom }, () => {
+  // Mirrors a real WordPress post: hero H1 outside <main>, menu, share buttons,
+  // author box, related posts and footer around the article body.
+  const body = Array.from(
+    { length: 12 },
+    (_, i) =>
+      `<p>Paragraph ${i} explains market structure for traders who want a clear directional bias before any entry on the chart.</p>`,
+  ).join("");
+  const page = `<!doctype html><html><head><title>Free Market Structure Course</title>
+    <link rel="canonical" href="https://ghosttraders.co/free-course/"></head><body>
+    <nav><a href="/">Home</a><a href="/courses/">Courses</a><a href="/blog/">Blog</a><a href="https://t.me/x">Telegram</a></nav>
+    <section class="gt-art-hero"><p>SMART MONEY CONCEPTS</p><h1>Free Market Structure Course</h1></section>
+    <main><article><div class="featured-image"><img src="/hero.png" alt=""></div>
+      <div class="entry-content">
+        <p>The free market structure course on GhostTraders fixes the order: direction first.</p>
+        <h2>Why market structure comes first</h2>${body}
+        <h2>What the course covers</h2><p>See the <a href="/courses/free-course/">course</a> and <a href="https://ghosttraders.co/best-courses/">guide</a>.</p>
+        <div class="gt-share"><a href="https://www.facebook.com/sharer/sharer.php?u=x">Facebook</a><a href="https://ghosttraders.co/?p=33036">More</a></div>
+      </div>
+      <aside class="author-box"><img src="/me.png" alt="Ndumiso"><a href="/author/">Ndumiso</a></aside>
+    </article></main>
+    <section class="related"><h2>Keep reading</h2><a href="/a/"><img src="/a.png" alt="A"></a><a href="/b/"><img src="/b.png" alt=""></a></section>
+    <footer><h3>Trading Tools</h3><a href="/calc/">Calc</a><a href="https://instagram.com/gt">Instagram</a></footer>
+    </body></html>`;
+  const result = analyzeContent({
+    ...baseInput,
+    keyphrase: "market structure",
+    content: page,
+    html: true,
+    slug: "",
+    pageUrl: "https://ghosttraders.co/free-course/",
+  });
+
+  it("reads the opening from the article, not the hero", () => {
+    assert.equal(check(result, "keyphrase-first")?.status, "pass");
+  });
+
+  it("counts only links inside the article, without share buttons", () => {
+    assert.match(check(result, "internal-links")?.message ?? "", /^2 internal links/);
+    assert.match(check(result, "outbound-links")?.message ?? "", /^No outbound links/);
+  });
+
+  it("counts article headings and images, plus the featured image", () => {
+    assert.match(check(result, "keyphrase-headings")?.message ?? "", /of 2 subheadings/);
+    assert.match(
+      check(result, "image-count")?.message ?? "",
+      /^1 image in the content, including the featured image/,
+    );
+    assert.equal(check(result, "image-alt")?.status, "fail");
+  });
+
+  it("finds the H1 in the page header and splits sections at nested headings", () => {
+    assert.equal(check(result, "single-h1")?.status, "pass");
+    assert.match(check(result, "section-length")?.message ?? "", /^No section exceeds 300 words/);
+  });
+
+  it("flags a live page with no meta description tag", () => {
+    assert.equal(check(result, "meta-tag-live")?.status, "fail");
+  });
+
+  it("leaves the footer and related posts out of the word count", () => {
+    assert.ok(result.wordCount < 300, String(result.wordCount));
+  });
+});

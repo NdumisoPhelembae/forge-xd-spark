@@ -139,6 +139,7 @@ const WEIGHTS: Record<string, number> = {
   "seo-title-length": 6,
   "meta-phrase": 6,
   "meta-length": 6,
+  "meta-tag-live": 6,
   "slug-phrase": 5,
   "keyphrase-density": 8,
   "keyphrase-spread": 4,
@@ -323,12 +324,94 @@ function wordCount(text: string) {
   return text.trim().match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu)?.length ?? 0;
 }
 
+// Where the article usually lives, most specific first (WordPress themes,
+// page builders, then generic HTML5).
+const CONTENT_SELECTORS = [
+  ".entry-content",
+  "[itemprop='articleBody']",
+  ".post-content",
+  ".article-content",
+  ".article-body",
+  ".post-body",
+  ".content-body",
+  "article",
+  "main",
+  "[role='main']",
+  "#content",
+];
+
+// Page furniture that is not part of the content: menus, footers, sidebars,
+// share buttons, author boxes, newsletter forms, comments and related posts.
+const BOILERPLATE = [
+  "header",
+  "nav",
+  "footer",
+  "aside",
+  "form",
+  "[role='navigation']",
+  "[role='banner']",
+  "[role='contentinfo']",
+  "[role='complementary']",
+  "[class*='share']",
+  "[class*='social']",
+  "[class*='related']",
+  "[class*='author']",
+  "[class*='newsletter']",
+  "[class*='subscribe']",
+  "[class*='comment']",
+  "[id*='comment']",
+  "[class*='breadcrumb']",
+  "[class*='sidebar']",
+  "[class*='widget']",
+  "[class*='cookie']",
+  ".sharedaddy",
+].join(", ");
+
+const FEATURED_IMAGE =
+  ".featured-image img, .post-thumbnail img, img.wp-post-image, .page-header-image-single img";
+
+// Share buttons are not real links to or from the content.
+const SHARE_LINK =
+  /(facebook\.com\/sharer|twitter\.com\/intent|x\.com\/intent|reddit\.com\/submit|telegram\.me\/share|t\.me\/share|whatsapp\.com\/send|wa\.me\/|pinterest\.com\/pin|linkedin\.com\/(sharing|shareArticle)|mailto:\?)/i;
+
+function isFullPage(html: string, doc: Document) {
+  return (
+    /<(html|head|body)\b/i.test(html) ||
+    !!doc.querySelector("header nav, body > header, body > footer")
+  );
+}
+
+function pickContentRoot(doc: Document, fullPage: boolean): Element | null {
+  if (!fullPage) return doc.body;
+  for (const selector of CONTENT_SELECTORS) {
+    for (const candidate of Array.from(doc.querySelectorAll(selector))) {
+      const trial = candidate.cloneNode(true) as Element;
+      trial.querySelectorAll(BOILERPLATE).forEach((item) => item.remove());
+      if (wordCount(trial.textContent ?? "") >= 80) return candidate;
+    }
+  }
+  return doc.body;
+}
+
 function safeText(html: string) {
   const parsed = new DOMParser().parseFromString(html, "text/html");
   parsed
     .querySelectorAll("script, style, noscript, template, svg, iframe")
     .forEach((item) => item.remove());
-  parsed.querySelectorAll("table").forEach((table) => {
+  const fullPage = isFullPage(html, parsed);
+  const source = pickContentRoot(parsed, fullPage) ?? parsed.body;
+  // Featured images sit outside the article body in most themes but belong to it.
+  const featured = fullPage
+    ? Array.from(parsed.querySelectorAll(FEATURED_IMAGE))
+        .filter((img) => !source?.contains(img))
+        .slice(0, 1)
+    : [];
+  const root = (source?.cloneNode(true) as Element | undefined) ?? parsed.createElement("div");
+  if (fullPage) root.querySelectorAll(BOILERPLATE).forEach((item) => item.remove());
+
+  // Text view of the content, keeping paragraph breaks.
+  const textRoot = root.cloneNode(true) as Element;
+  textRoot.querySelectorAll("table").forEach((table) => {
     const rows = Array.from(table.querySelectorAll("tr"))
       .map((row) =>
         Array.from(row.querySelectorAll("th, td"))
@@ -338,8 +421,10 @@ function safeText(html: string) {
       .filter(Boolean);
     table.replaceWith(parsed.createTextNode(`\n\n${rows.join("\n")}\n\n`));
   });
-  parsed.querySelectorAll("br").forEach((item) => item.replaceWith(parsed.createTextNode("\n\n")));
-  parsed
+  textRoot
+    .querySelectorAll("br")
+    .forEach((item) => item.replaceWith(parsed.createTextNode("\n\n")));
+  textRoot
     .querySelectorAll(
       "address, article, blockquote, dd, div, dl, dt, footer, h1, h2, h3, h4, h5, h6, li, main, ol, p, section, ul",
     )
@@ -348,13 +433,37 @@ function safeText(html: string) {
       item.append(parsed.createTextNode("\n\n"));
     });
   const text =
-    parsed.body?.textContent
+    textRoot.textContent
       ?.replace(/\u00a0/g, " ")
       .replace(/[ \t]+\n/g, "\n")
       .replace(/\n[ \t]+/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
       .trim() ?? "";
-  return { document: parsed, text };
+  return { document: parsed, root, featured, fullPage, text };
+}
+
+// Splits content into runs of text between headings, in document order, at any
+// nesting depth (page builders wrap everything in divs).
+const SECTION_BLOCKS = "h1, h2, h3, h4, h5, h6, p, li, blockquote, pre, dd, dt, td, th";
+function sectionsOf(root: Element) {
+  const result: string[] = [];
+  let current: string[] = [];
+  for (const block of Array.from(root.querySelectorAll(SECTION_BLOCKS))) {
+    // Skip blocks nested in another counted block (a p inside an li).
+    if (
+      block.parentElement?.closest(SECTION_BLOCKS) &&
+      root.contains(block.parentElement.closest(SECTION_BLOCKS))
+    )
+      continue;
+    if (/^H[1-6]$/.test(block.tagName)) {
+      if (current.length) result.push(current.join(" "));
+      current = [];
+    } else {
+      current.push(block.textContent ?? "");
+    }
+  }
+  if (current.length) result.push(current.join(" "));
+  return result;
 }
 
 function addCheck(
@@ -391,7 +500,7 @@ export function analyzeContent(input: AuditInput): AuditResult {
   const phrase = input.keyphrase.trim();
   const checks: AuditCheck[] = [];
   const paragraphs = html
-    ? Array.from(parsed?.document.querySelectorAll("p") ?? [])
+    ? Array.from(parsed?.root.querySelectorAll("p") ?? [])
         .map((el) => el.textContent?.trim() ?? "")
         .filter(Boolean)
     : input.content
@@ -400,15 +509,21 @@ export function analyzeContent(input: AuditInput): AuditResult {
         .filter(Boolean);
   const firstParagraph = paragraphs[0] ?? text.slice(0, 240);
   const headings = html
-    ? Array.from(parsed?.document.querySelectorAll("h2, h3, h4, h5, h6") ?? [])
+    ? Array.from(parsed?.root.querySelectorAll("h2, h3, h4, h5, h6") ?? [])
         .map((el) => el.textContent?.trim() ?? "")
         .filter(Boolean)
     : [];
+  const pageH1 = parsed?.document.querySelector("h1");
+  const contentHeadings = Array.from(parsed?.root.querySelectorAll("h1, h2, h3, h4, h5, h6") ?? []);
+  // Many themes print the H1 in a page header outside the article body.
   const allHeadings = html
-    ? Array.from(parsed?.document.querySelectorAll("h1, h2, h3, h4, h5, h6") ?? [])
+    ? pageH1 && !contentHeadings.some((heading) => heading.tagName === "H1")
+      ? [pageH1, ...contentHeadings]
+      : contentHeadings
     : [];
   const occurrences = countPhrase(text, phrase);
-  const density = words ? (occurrences * wordCount(phrase) * 100) / words : 0;
+  // Yoast's formula: keyphrase matches per 100 words.
+  const density = words ? (occurrences * 100) / words : 0;
   const phraseRE = new RegExp(escapeRegExp(normalizedPhrase(phrase)).replace(/\s+/g, "\\s+"), "i");
 
   const firstStatus = phraseRE.test(normalizedPhrase(firstParagraph)) ? "pass" : "fail";
@@ -522,6 +637,25 @@ export function analyzeContent(input: AuditInput): AuditResult {
     );
   }
 
+  // A fetched page with no meta description tag: Google writes its own snippet.
+  if (parsed?.fullPage) {
+    const liveMeta = parsed.document
+      .querySelector('meta[name="description" i]')
+      ?.getAttribute("content")
+      ?.trim();
+    addCheck(
+      checks,
+      "meta-tag-live",
+      "Keyphrase",
+      "Meta description tag on the page",
+      liveMeta ? "pass" : "fail",
+      liveMeta
+        ? "The page has a meta description tag."
+        : "The page has no meta description tag, so Google writes its own snippet. Set one in your SEO plugin.",
+      5,
+    );
+  }
+
   if (input.slug.trim()) {
     const slug = normalizedPhrase(
       input.slug.replace(/^https?:\/\/[^/]+\//, "").split("?")[0] ?? input.slug,
@@ -551,7 +685,7 @@ export function analyzeContent(input: AuditInput): AuditResult {
   }
 
   const densityStatus = statusForRange(density, 0.5, 3, 0.1);
-  const lowerOccurrences = Math.ceil((words * 0.005) / Math.max(wordCount(phrase), 1));
+  const lowerOccurrences = Math.ceil(words * 0.005);
   addCheck(
     checks,
     "keyphrase-density",
@@ -727,20 +861,7 @@ export function analyzeContent(input: AuditInput): AuditResult {
     );
   }
 
-  const sections = html
-    ? (() => {
-        const result: string[] = [];
-        let current: string[] = [];
-        parsed?.document.body?.childNodes.forEach((node) => {
-          if (node.nodeType === 1 && /^H[1-6]$/.test((node as Element).tagName)) {
-            if (current.length) result.push(current.join(" "));
-            current = [];
-          } else current.push(node.textContent ?? "");
-        });
-        if (current.length) result.push(current.join(" "));
-        return result;
-      })()
-    : paragraphs;
+  const sections = html && parsed ? sectionsOf(parsed.root) : paragraphs;
   const longestSection = Math.max(0, ...sections.map(wordCount));
   const oversizedSections = sections.filter((section) => wordCount(section) > 300).length;
   addCheck(
@@ -865,9 +986,29 @@ export function analyzeContent(input: AuditInput): AuditResult {
     }
   };
   const baseHost = hostOf(pageUrl);
-  const links = Array.from(parsed?.document.querySelectorAll("a[href]") ?? []).filter((link) => {
+  const samePage = (href: string) => {
+    try {
+      const target = new URL(href, pageUrl || "https://local.invalid/");
+      const here = new URL(pageUrl || "https://local.invalid/");
+      return (
+        target.pathname.replace(/\/$/, "") === here.pathname.replace(/\/$/, "") &&
+        hostOf(target.href) === hostOf(here.href) &&
+        !!pageUrl
+      );
+    } catch {
+      return false;
+    }
+  };
+  const links = Array.from(parsed?.root.querySelectorAll("a[href]") ?? []).filter((link) => {
     const href = (link.getAttribute("href") ?? "").trim();
-    return !!href && !href.startsWith("#") && !/^(mailto|tel|javascript):/i.test(href);
+    return (
+      !!href &&
+      !href.startsWith("#") &&
+      !/^(mailto|tel|javascript):/i.test(href) &&
+      !SHARE_LINK.test(href) &&
+      !/[?&]p=\d+/.test(href) &&
+      !samePage(href)
+    );
   });
   const isAbsolute = (href: string) => /^(https?:)?\/\//i.test(href);
   const internalLinks = links.filter((link) => {
@@ -877,14 +1018,15 @@ export function analyzeContent(input: AuditInput): AuditResult {
   });
   const outboundLinks = links.filter((link) => !internalLinks.includes(link));
   if (html) {
-    const internalStatus = statusForRange(internalLinks.length, 2, 5, 1);
+    const internalStatus =
+      internalLinks.length >= 2 ? "pass" : internalLinks.length === 1 ? "warning" : "fail";
     addCheck(
       checks,
       "internal-links",
       "Content Quality",
       "Internal links",
       internalStatus,
-      `${internalLinks.length} internal links found. Aim for 2 to 5 links to relevant pages on the same site.`,
+      `${internalLinks.length} internal ${internalLinks.length === 1 ? "link" : "links"} in the content. Aim for at least 2 links to relevant pages on the same site.`,
       22,
     );
     // Informational only: some sites (GhostTraders, for one) deliberately link
@@ -933,14 +1075,17 @@ export function analyzeContent(input: AuditInput): AuditResult {
   }
 
   if (html) {
-    const images = Array.from(parsed?.document.querySelectorAll("img") ?? []);
+    const images = [
+      ...(parsed?.featured ?? []),
+      ...Array.from(parsed?.root.querySelectorAll("img") ?? []),
+    ];
     addCheck(
       checks,
       "image-count",
       "Images",
       "Image count",
-      statusForRange(images.length, 2, 4, 1),
-      `${images.length} images found. Aim for 2 to 4 relevant images.`,
+      images.length >= 2 ? "pass" : images.length === 1 ? "warning" : "fail",
+      `${images.length} ${images.length === 1 ? "image" : "images"} in the content${parsed?.featured.length ? ", including the featured image" : ""}. Aim for at least 2 relevant images.`,
       25,
     );
     const missingAlt = images.filter(
