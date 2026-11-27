@@ -5,10 +5,15 @@ import { FLUENT_FORMS, submitFluentForm } from "./fluentforms";
 
 export const sendContactMessage = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
-    const input = (typeof data === "object" && data !== null ? data : {}) as Record<string, unknown>;
+    const input = (typeof data === "object" && data !== null ? data : {}) as Record<
+      string,
+      unknown
+    >;
     const firstName = String(input["firstName"] ?? "").trim();
     const lastName = String(input["lastName"] ?? "").trim();
-    const email = String(input["email"] ?? "").trim().toLowerCase();
+    const email = String(input["email"] ?? "")
+      .trim()
+      .toLowerCase();
     const phone = String(input["phone"] ?? "").trim();
     const message = String(input["message"] ?? "").trim();
     if (!firstName || !lastName) {

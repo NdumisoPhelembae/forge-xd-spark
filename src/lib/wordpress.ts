@@ -1,10 +1,27 @@
 // Live blog data from the ForgeXD WordPress backend (headless CMS).
 // Falls back to the local sample posts when WordPress has no real posts yet
-// or the gateway is unreachable, so the blog never renders empty.
+// or the CMS is unreachable, so the blog never renders empty.
+//
+// Requests are kept small and cached on the server:
+// - a single article is fetched by slug, not by downloading every post
+// - the post list is paginated, so it keeps working past 100 posts
+// - results are cached in memory for a few minutes, so repeat visits do not
+//   hit WordPress at all
 import { createServerFn } from "@tanstack/react-start";
-import { getWordPressCategories, posts as samplePosts, siteAuthor, type BlogPost, type WordPressTerm } from "./blog";
+import {
+  getWordPressCategories,
+  posts as samplePosts,
+  siteAuthor,
+  type BlogPost,
+  type WordPressTerm,
+} from "./blog";
 
 const CMS_URL = "https://cms.forgexd.co.za";
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const PAGE_SIZE = 100;
+const MAX_PAGES = 20;
+// Only the fields the site uses. Skips heavy extras such as SEO plugin head data.
+const FIELDS = "id,slug,date,title,excerpt,content,_links,_embedded";
 
 type WpMedia = { source_url?: string };
 type WpAuthor = { name?: string };
@@ -22,23 +39,56 @@ type WpPost = {
   };
 };
 
+// ---------- text helpers ----------
+
 const stripHtml = (html: string) =>
   html
     .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
-const decodeEntities = (text: string) =>
-  text
-    .replace(/&#8217;/g, "’")
-    .replace(/&#8216;/g, "‘")
-    .replace(/&#8220;/g, "“")
-    .replace(/&#8221;/g, "”")
-    .replace(/&#8211;/g, "–")
-    .replace(/&#8212;/g, "—")
-    .replace(/&amp;/g, "&")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&hellip;/g, "…");
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: " ",
+  hellip: "…",
+  ndash: "–",
+  mdash: "—",
+  lsquo: "‘",
+  rsquo: "’",
+  ldquo: "“",
+  rdquo: "”",
+  laquo: "«",
+  raquo: "»",
+  copy: "©",
+  reg: "®",
+  trade: "™",
+  deg: "°",
+  middot: "·",
+  bull: "•",
+  times: "×",
+  euro: "€",
+  pound: "£",
+};
+
+// Decodes every numeric entity (&#038; &#8217; &#x2019;) and the common named
+// ones WordPress emits, so titles and excerpts never show raw codes.
+export const decodeEntities = (text: string) =>
+  text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, code: string) => {
+    if (code[0] === "#") {
+      const point =
+        code[1] === "x" || code[1] === "X"
+          ? parseInt(code.slice(2), 16)
+          : parseInt(code.slice(1), 10);
+      return Number.isFinite(point) && point > 0 && point <= 0x10ffff
+        ? String.fromCodePoint(point)
+        : match;
+    }
+    return NAMED_ENTITIES[code.toLowerCase()] ?? match;
+  });
 
 const estimateReadTime = (html: string) => {
   const words = stripHtml(html).split(" ").filter(Boolean).length;
@@ -53,8 +103,7 @@ const formatExcerpt = (html: string) => {
   return `${excerpt.slice(0, boundary > 0 ? boundary : 220).trimEnd()}…`;
 };
 
-const FALLBACK_COVER =
-  "https://cms.forgexd.co.za/wp-content/uploads/forgexd-default-cover.jpg";
+const FALLBACK_COVER = "https://cms.forgexd.co.za/wp-content/uploads/forgexd-default-cover.jpg";
 
 function mapPost(wp: WpPost): BlogPost {
   const categories = getWordPressCategories(wp._embedded?.["wp:term"]);
@@ -74,27 +123,66 @@ function mapPost(wp: WpPost): BlogPost {
   };
 }
 
-// The default "Hello world!" post is not real content — treat the blog as empty.
+// The default "Hello world!" post is not real content.
 const isRealPost = (p: BlogPost) => p.slug !== "hello-world";
 
-async function fetchWpPosts(): Promise<BlogPost[]> {
-  // Published posts are public, so we read them straight from the CMS.
-  const response = await fetch(
-    `${CMS_URL}/wp-json/wp/v2/posts?per_page=50&status=publish&_embed=1`,
-    { headers: { Accept: "application/json" } },
-  );
-  if (!response.ok) {
-    const body = await response.text();
-    console.error(`WordPress posts fetch failed [${response.status}]: ${body}`);
-    return [];
-  }
-  const data = (await response.json()) as WpPost[];
-  return data.map(mapPost).filter(isRealPost);
+// ---------- server cache ----------
+
+type CacheEntry<T> = { at: number; value: Promise<T> };
+const cache = new Map<string, CacheEntry<unknown>>();
+
+// Caches the promise itself, so simultaneous requests share one WordPress call.
+// A failed call is dropped from the cache straight away so the next visit retries.
+function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
+  const hit = cache.get(key) as CacheEntry<T> | undefined;
+  if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.value;
+  const value = load();
+  cache.set(key, { at: Date.now(), value });
+  value.catch(() => cache.delete(key));
+  return value;
 }
 
+// ---------- WordPress requests ----------
+
+class CmsUnavailableError extends Error {}
+
+async function wpFetch(query: string): Promise<{ posts: WpPost[]; totalPages: number }> {
+  const response = await fetch(`${CMS_URL}/wp-json/wp/v2/posts?${query}`, {
+    headers: { Accept: "application/json" },
+  });
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    throw new CmsUnavailableError(
+      `WordPress request failed [${response.status}]: ${body.slice(0, 300)}`,
+    );
+  }
+  const totalPages = Number(response.headers.get("X-WP-TotalPages") ?? "1") || 1;
+  return { posts: (await response.json()) as WpPost[], totalPages };
+}
+
+async function fetchAllPosts(): Promise<BlogPost[]> {
+  const base = `per_page=${PAGE_SIZE}&status=publish&_embed=1&_fields=${FIELDS}`;
+  const first = await wpFetch(`${base}&page=1`);
+  const pages = Math.min(first.totalPages, MAX_PAGES);
+  const rest = await Promise.all(
+    Array.from({ length: pages - 1 }, (_, i) => wpFetch(`${base}&page=${i + 2}`)),
+  );
+  return [first, ...rest].flatMap((page) => page.posts.map(mapPost)).filter(isRealPost);
+}
+
+async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
+  const { posts } = await wpFetch(
+    `slug=${encodeURIComponent(slug)}&status=publish&_embed=1&_fields=${FIELDS}`,
+  );
+  const post = posts[0] ? mapPost(posts[0]) : null;
+  return post && isRealPost(post) ? post : null;
+}
+
+// All posts for the journal page. Sample posts stand in while WordPress has no
+// real posts yet, or when the CMS cannot be reached.
 async function resolvePosts(): Promise<BlogPost[]> {
   try {
-    const live = await fetchWpPosts();
+    const live = await cached("posts:all", fetchAllPosts);
     return live.length > 0 ? live : samplePosts;
   } catch (error) {
     console.error("WordPress fetch error, using sample posts:", error);
@@ -102,13 +190,40 @@ async function resolvePosts(): Promise<BlogPost[]> {
   }
 }
 
-export const getBlogPosts = createServerFn({ method: "GET" }).handler(
-  async () => resolvePosts(),
-);
+async function resolvePost(slug: string): Promise<BlogPost | null> {
+  // Reuse the full list when it is already cached, so no extra request is made.
+  const list = cache.get("posts:all") as CacheEntry<BlogPost[]> | undefined;
+  if (list && Date.now() - list.at < CACHE_TTL_MS) {
+    const posts = await resolvePosts();
+    return posts.find((p) => p.slug === slug) ?? null;
+  }
+  try {
+    const live = await cached(`post:${slug}`, () => fetchPostBySlug(slug));
+    if (live) return live;
+    // Not in WordPress. It may be a sample post shown while the blog is empty.
+    const posts = await resolvePosts();
+    return posts === samplePosts ? (samplePosts.find((p) => p.slug === slug) ?? null) : null;
+  } catch (error) {
+    console.error(`WordPress fetch error for "${slug}", trying sample posts:`, error);
+    return samplePosts.find((p) => p.slug === slug) ?? null;
+  }
+}
+
+// ---------- server functions ----------
+
+export const getBlogPosts = createServerFn({ method: "GET" }).handler(async () => resolvePosts());
 
 export const getBlogPost = createServerFn({ method: "GET" })
   .inputValidator((slug: string) => slug)
+  .handler(async ({ data: slug }) => resolvePost(slug));
+
+// "Keep reading" cards. Sent without article bodies to keep the page light.
+export const getRelatedPosts = createServerFn({ method: "GET" })
+  .inputValidator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
-    const all = await resolvePosts();
-    return all.find((p) => p.slug === slug) ?? null;
+    const posts = await resolvePosts();
+    return posts
+      .filter((p) => p.slug !== slug)
+      .slice(0, 3)
+      .map((p) => ({ ...p, contentHtml: "" }));
   });
