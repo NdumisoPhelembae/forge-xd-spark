@@ -308,7 +308,7 @@ export function SeoAuditTool({ embedded = false }: { embedded?: boolean }) {
                 }}
                 className={`flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold transition-colors ${
                   source === value
-                    ? "bg-brand-ink text-primary-foreground"
+                    ? "bg-foreground text-background"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >

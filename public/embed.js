@@ -10,13 +10,17 @@
       if (host.getAttribute("data-forgexd-ready")) continue;
       host.setAttribute("data-forgexd-ready", "1");
       var frame = document.createElement("iframe");
-      var credit = host.querySelector('a[href*="forgexd.co.za"]') ? "&credit=host" : "";
+      var theme = host.getAttribute("data-theme") || "light";
       frame.src =
-        ORIGIN + "/embed/seo-audit?ref=" + encodeURIComponent(location.hostname) + credit;
+        ORIGIN +
+        "/embed/seo-audit?theme=" +
+        encodeURIComponent(theme) +
+        "&ref=" +
+        encodeURIComponent(location.hostname);
       frame.title = "Free on-page SEO audit tool by ForgeXD";
       frame.loading = "lazy";
       frame.setAttribute("allow", "clipboard-write");
-      frame.style.cssText = "display:block;width:100%;min-height:760px;border:0;";
+      frame.style.cssText = "display:block;width:100%;min-height:760px;border:0;background:transparent;";
       host.insertBefore(frame, host.firstChild);
     }
   }
