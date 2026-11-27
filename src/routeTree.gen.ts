@@ -16,6 +16,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ServicesDigitalBusinessLaunchPackageRouteImport } from './routes/services.digital-business-launch-package'
 import { Route as ServicesSeoContentStrategyRouteImport } from './routes/services.seo-content-strategy'
+import { Route as ToolsFreeSeoAuditRouteImport } from './routes/tools.free-seo-audit'
 import { Route as ServicesUxUiDesignRouteImport } from './routes/services.ux-ui-design'
 import { Route as ServicesWebDesignDevelopmentRouteImport } from './routes/services.web-design-development'
 
@@ -56,6 +57,11 @@ const ServicesSeoContentStrategyRoute =
     path: '/services/seo-content-strategy',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ToolsFreeSeoAuditRoute = ToolsFreeSeoAuditRouteImport.update({
+  id: '/tools/free-seo-audit',
+  path: '/tools/free-seo-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesUxUiDesignRoute = ServicesUxUiDesignRouteImport.update({
   id: '/services/ux-ui-design',
   path: '/services/ux-ui-design',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
+  '/tools/free-seo-audit': typeof ToolsFreeSeoAuditRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
   '/blog/': typeof BlogIndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
+  '/tools/free-seo-audit': typeof ToolsFreeSeoAuditRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
   '/blog': typeof BlogIndexRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/services/digital-business-launch-package': typeof ServicesDigitalBusinessLaunchPackageRoute
   '/services/seo-content-strategy': typeof ServicesSeoContentStrategyRoute
+  '/tools/free-seo-audit': typeof ToolsFreeSeoAuditRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-design-development': typeof ServicesWebDesignDevelopmentRoute
   '/blog/': typeof BlogIndexRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
+    | '/tools/free-seo-audit'
     | '/services/ux-ui-design'
     | '/services/web-design-development'
     | '/blog/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
+    | '/tools/free-seo-audit'
     | '/services/ux-ui-design'
     | '/services/web-design-development'
     | '/blog'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/services/digital-business-launch-package'
     | '/services/seo-content-strategy'
+    | '/tools/free-seo-audit'
     | '/services/ux-ui-design'
     | '/services/web-design-development'
     | '/blog/'
@@ -145,6 +157,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   ServicesDigitalBusinessLaunchPackageRoute: typeof ServicesDigitalBusinessLaunchPackageRoute
   ServicesSeoContentStrategyRoute: typeof ServicesSeoContentStrategyRoute
+  ToolsFreeSeoAuditRoute: typeof ToolsFreeSeoAuditRoute
   ServicesUxUiDesignRoute: typeof ServicesUxUiDesignRoute
   ServicesWebDesignDevelopmentRoute: typeof ServicesWebDesignDevelopmentRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -201,6 +214,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSeoContentStrategyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/free-seo-audit': {
+      id: '/tools/free-seo-audit'
+      path: '/tools/free-seo-audit'
+      fullPath: '/tools/free-seo-audit'
+      preLoaderRoute: typeof ToolsFreeSeoAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/ux-ui-design': {
       id: '/services/ux-ui-design'
       path: '/services/ux-ui-design'
@@ -226,6 +246,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesDigitalBusinessLaunchPackageRoute:
     ServicesDigitalBusinessLaunchPackageRoute,
   ServicesSeoContentStrategyRoute: ServicesSeoContentStrategyRoute,
+  ToolsFreeSeoAuditRoute: ToolsFreeSeoAuditRoute,
   ServicesUxUiDesignRoute: ServicesUxUiDesignRoute,
   ServicesWebDesignDevelopmentRoute: ServicesWebDesignDevelopmentRoute,
   BlogIndexRoute: BlogIndexRoute,

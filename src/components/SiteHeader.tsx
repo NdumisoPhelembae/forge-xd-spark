@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { label: "Services", href: "/#services" },
   { label: "About", to: "/about" as const },
   { label: "Blog", to: "/blog" as const },
+  { label: "Free SEO Audit", to: "/tools/free-seo-audit" as const },
   { label: "Approach", href: "/#approach" },
   { label: "Contact", to: "/contact" as const },
 ];
