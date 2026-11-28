@@ -15,8 +15,8 @@
         ORIGIN +
         "/embed/seo-audit?theme=" +
         encodeURIComponent(theme) +
-        "&ref=" +
-        encodeURIComponent(location.hostname);
+        "&page=" +
+        encodeURIComponent(location.href.split("#")[0]);
       frame.title = "Free on-page SEO audit tool by ForgeXD";
       frame.loading = "lazy";
       frame.setAttribute("allow", "clipboard-write");

@@ -284,7 +284,10 @@ async function checkImage(src: string): Promise<OgImageCheck> {
   }
 }
 
-export async function fetchPublicPage(raw: string): Promise<FetchPageResult> {
+export async function fetchPublicPage(
+  raw: string,
+  { checkOgImage = true }: { checkOgImage?: boolean } = {},
+): Promise<FetchPageResult> {
   try {
     let url = validateTarget(raw);
     const redirects: Array<{ from: string; to: string; status: number }> = [];
@@ -308,7 +311,7 @@ export async function fetchPublicPage(raw: string): Promise<FetchPageResult> {
       }
       const html = decode(res.body ?? Buffer.alloc(0), res.contentType);
       const ogImageUrl = findOgImage(html, url.href);
-      const ogImage = ogImageUrl ? await checkImage(ogImageUrl) : undefined;
+      const ogImage = ogImageUrl && checkOgImage ? await checkImage(ogImageUrl) : undefined;
       return { ok: true, html, url: url.href, redirects, ogImage };
     }
     throw new FetchError("That address redirects too many times.");

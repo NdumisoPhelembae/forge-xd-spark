@@ -9,7 +9,7 @@ function snippetFor(theme: EmbedTheme) {
   return `<div data-forgexd-seo-audit data-theme="${theme}">
   <p style="margin:8px 0 0;text-align:right;font-size:13px">Powered by <a href="https://forgexd.co.za/tools/free-on-page-seo-audit-tool">ForgeXD</a></p>
 </div>
-<script src="https://forgexd.co.za/embed.js?v=2" async></script>`;
+<script src="https://forgexd.co.za/embed.js?v=3" async></script>`;
 }
 
 export function EmbedSnippet() {
